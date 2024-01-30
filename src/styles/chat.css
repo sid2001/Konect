@@ -1,0 +1,165 @@
+button.call-btn{
+  background: transparent;
+  border: none;
+  width: 30px;
+  /* height: 80px; */
+  
+}
+.container-wrapper{
+  /* background: rgb(56,9,53); */
+  background: radial-gradient(circle, rgba(56,9,53,1) 0%, rgba(42,19,60,1) 10%, rgba(5,5,14,1) 40%, rgba(1,1,30,0.9164915966386554) 96%);
+  position: relative;
+  display: flex;
+  height: 90vh;
+  width: 80vw;
+  flex-direction: row;
+  /* border: white solid 1px; */
+  box-shadow: rgba(202, 88, 231, 0.25) 0px 0px 15px 1px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin: auto;
+  margin-top: 5vh;
+  min-width: 600px;
+  min-height: 600px;
+}
+.header-wrapper{
+  width: 75%;
+  position: relative;
+  /* border: white solid; */
+  overflow: hidden;
+}
+
+.contact-container{
+  position: relative;
+  width: 25%;
+  max-width: 300px;
+  min-width: 200px;
+  /* border: white solid; */
+  border-right: solid 1px rgba(255, 255, 255, 0.403);
+  padding: 0px;
+}
+.userHeader, .friendHeader{
+  /* padding:10px 0 0 10px; */
+  height: 10vh;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  /* border: solid white; */
+  width: 100%;
+  align-items: center;
+}
+.userHeader > p,.userHeader>img, .friendHeader>p,.friendHeader>img{
+  margin-left:8px ;
+}
+.call-btn{
+  position: absolute;
+  right : 5%;
+  transition: 0.1s ease-in;
+}
+.call-btn>img{
+  padding: 1px;
+}
+.call-btn:hover {
+  cursor: pointer;
+  background: rgba(245, 244, 244, 0.367);
+  border-radius: 4px;
+}
+.profile-pic{
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.ChatContainer{
+  position: relative;
+  height: 80%;
+  display: flex;
+  overflow-y: scroll;
+  flex-direction: column;
+  background: linear-gradient(18deg, rgba(56,9,53,1) 31%, rgba(42,19,60,1) 59%);
+}
+.ChatContainer::-webkit-scrollbar{
+  display: none;
+}
+.user-message, .friend-message{
+  display: flex;
+  flex-direction: column;
+  /* border: white solid 1px; */
+  height: auto;
+  padding: 0 10px 10px 10px;
+}
+.user-message >.card{
+  position: relative;
+  align-self: flex-end ;
+}
+.user-message-content,.friend-message-content{
+  word-wrap: break-word;
+}
+.ChatContainer ul {
+  list-style-type: none;
+  padding: 0;
+  height: 100%;
+}
+.card{
+  width:30%;
+  height: auto;
+  min-width:200px;
+  border-radius: 22px;
+  padding:0px 10px 0 10px;
+  background: rgba(217, 208, 208, 0.099)
+}
+.input-area{
+  display: flex;
+  position:relative;
+  flex-direction: row;
+  height: 20%;
+}
+
+.input-area > button{
+  background: transparent;
+  border: none;
+  display: inline;
+  height: 50px;
+  padding: 0;
+  width:10% ;
+  align-items: center;
+}
+.input-area img{
+  width: 20px;
+}
+.input-area>textarea {
+  resize: none;
+  width: 90%;
+  height: 50%;
+  border: rgba(255, 255, 255, 0.348) solid 1px;
+  background-color: rgba(255, 255, 255, 0.111);
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+}
+.input-area>textarea:focus{
+  /* border: none; */
+  outline: none;
+}
+.input-area>textarea::-webkit-scrollbar{
+  display: none;
+}
+.video-box-m, .video-box-fs{
+  position: fixed;
+  display: flex;
+  /* overflow: hidden; */
+  left: 0px;
+  top: 0px;
+  width: 400px;
+  min-width: 400px;
+  border: 1px white solid;
+}
+#localVideo{
+  position: relative;
+  width: 90%;
+  height: 80%;
+  justify-self: center;
+}
+.resize-container{
+  position: absolute;
+}

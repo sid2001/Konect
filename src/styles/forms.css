@@ -1,0 +1,139 @@
+#form-container{
+  position:absolute;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid white;
+  background: linear-gradient(rgb(128, 208, 239),black);
+  justify-self: center;
+  margin: auto;
+  color: black;
+  border: none;
+  border-radius:20px;
+  max-width: 500px;
+  overflow: hidden;
+}
+::placeholder{
+  color: white;
+  opacity: 0.6;
+}
+.heading{
+  align-self: center;
+}
+.register-container, .login-container{
+  position: relative;
+  z-index: 1;
+  display: flex;
+  padding: 0;
+  /* flex-direction: column; */
+  font-family: 'Poppins',sans-serif;
+  /* min-width: 400px; */
+  justify-content: center;
+  max-width: 600px;
+  flex-wrap: wrap;
+  width: auto;
+  height: auto;
+}
+.input-container {
+  position: relative;
+  display: flex;
+  font-size: small;
+  flex-direction: column;
+  flex-grow: 1;
+  margin: 40px 0 0 2%;
+  flex: 1 1 calc(100% * (1/2) - 10px - 1px);
+  max-width: 200px;
+  /* width: calc(100% * (1/2) - 10px - 1px); */
+}
+.input-container input{
+  max-width: 200px;
+  height: 30px;
+  border-radius: 20px;
+  box-shadow: none;
+  border-style: none;
+  /* border: none; */
+  outline: none;
+  padding: 0 5px 0 10px;
+  caret-color: rgb(220, 208, 208);
+  background: rgba(0, 0, 0, 0.504);
+  filter:contrast(1);
+  font-weight: 700;
+}
+input.invalid {
+  box-shadow: 0px 0px 4px 1px rgba(255, 0, 0, 0.429);
+
+}
+.input-container label{
+  margin: 0px 0px 5px 5px;
+}
+.submit{
+  position: relative;
+  left: calc(100% *1/2 - 40px);
+  margin: 30px 0 30px 0 ;
+  color:black;
+  background-color: rgba(142, 203, 238, 0.672);
+  border: none;
+  border-radius: 10px;
+  width: 80px;
+  height: 30px;
+}
+.submit:hover{
+  cursor: pointer;
+}
+.submit:disabled{
+  cursor: default;
+  background-color: gray;
+}
+.header{
+  position: relative;
+  display: grid;
+  justify-content: center;
+  z-index: 1;
+}
+.heading{
+  z-index: 1;
+  margin: 10px 0 10px 0;
+  filter: contrast(1);
+}
+.options{
+  text-align: center;
+  width: auto;
+  top: 15%;
+  left: 40%;
+  color: rgb(240, 242, 142);
+}
+.options:hover{
+  cursor: pointer;
+}
+.design{
+  background-color: rgb(84, 188, 248);
+  position: absolute;
+  margin: 0;
+  margin: 0;
+  padding:0 ;
+  width:500px;
+  height: 500px;
+  z-index: 0;
+  border-radius:50% ;
+  object-fit: contain ;
+}
+.design.curve1{
+  left: -200px;
+  top:-200px;
+  filter: blur(1px);
+}
+.design.curve2{
+  filter: blur(2px);
+  width:150px;
+  height: 150px;
+  background-color: rgba(251, 114, 182, 0.879);
+  right:-75px;
+  top: -20px;
+}
+.design.curve3{
+  filter: blur(4px);
+  width:75px;
+  height: 75px;
+  background-color: rgb(251, 157, 204);
+  right: 50px;
+  bottom: 45px;
+}
