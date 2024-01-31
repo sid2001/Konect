@@ -12,7 +12,7 @@ const getUser = async ()=>{
   return axios(config)
   .then(res=>{
     console.log(res); 
-    return res.data;
+    return JSON.parse(res.data);
   })
 }
 export const login = async (data)=>{

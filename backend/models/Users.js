@@ -4,6 +4,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
+  authType:{
+    type:String,
+    required:true
+  },
   email:{
     type: String,
     required:true
@@ -23,7 +27,9 @@ const userSchema = new Schema({
   },
   passwordHash:{
     type:String,
-    required:true
+    required:function(){
+      return this.authType==='regular';
+    }
   },
   createDate:{
     type: Date,

@@ -9,9 +9,10 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 const wss = require('./wsServer');
 const authRoute = require('./routes/auth');
 const cors = require('cors');
-require('dotenv').config();
 const app = express();
 const User = require('./models/Users');
+const {OAuth2Client} = require('google-auth-library');
+require('dotenv').config();
 
 const credentials = {key:fs.readFileSync("./key.pem"),cert:fs.readFileSync("./cert.pem")};
 const storeOptions = new MongoDBStore({
@@ -19,6 +20,11 @@ const storeOptions = new MongoDBStore({
   databaseName:'technic',
   collection:'user-sessions'
 });
+const googleAuthClient = new OAuth2Client(
+  process.env.CLIENT_ID,
+  process.env.CLIENT_SECRET,
+  'postmessage'
+);
 const sessionOptions = {
   secret:process.env.MYSECRET,
   resave:false,
@@ -32,6 +38,11 @@ const sessionOptions = {
   store:storeOptions 
 };
 
+app.use((req,res,next)=>{
+  req.googleAuthClient = googleAuthClient;
+  req.CLIENT_ID = process.env.CLIENT_ID;
+  next();
+})
 app.use(cors({
   origin:'https://127.0.0.1:5173',
   credentials:true

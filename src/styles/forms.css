@@ -4,13 +4,14 @@
   flex-direction: column;
   border: 1px solid white;
   background: linear-gradient(rgb(128, 208, 239),black);
-  justify-self: center;
+  align-items: center;
   margin: auto;
   color: black;
   border: none;
   border-radius:20px;
   max-width: 500px;
   overflow: hidden;
+  /* opacity: 0.5; */
 }
 ::placeholder{
   color: white;
@@ -136,4 +137,30 @@ input.invalid {
   background-color: rgb(251, 157, 204);
   right: 50px;
   bottom: 45px;
+}
+.google-button-wrapper{
+  position: relative;
+  display: flex;
+  bottom: 2px;
+  flex-direction: row;
+  width: 200px;
+  justify-content: center;
+  border: 1px rgb(80, 145, 241) solid;
+  border-radius: 20px;
+  transition-duration: 0.5s;
+  margin-bottom: 10px;
+  background-color: rgba(235, 238, 240, 0.099);
+}
+.google-login-btn {
+  background-color: transparent;
+  border-style: none;
+  padding: 0 4px 0 4px;
+  cursor: pointer;
+}
+.google-button-wrapper:hover{
+  background-color: rgba(255, 255, 255, 0.321);
+  border-color: transparent;
+}
+.google-icon{
+  width: 40px;
 }
