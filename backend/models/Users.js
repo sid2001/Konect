@@ -49,7 +49,8 @@ const userSchema = new Schema({
       },
     }
   ],
-  is_active:Boolean
+  is_active:Boolean,
+  
 })
 
 // userSchema.methods.getContacts = function(){

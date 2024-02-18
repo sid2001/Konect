@@ -6,17 +6,17 @@ import Contacts from "./Contacts";
 import ChatBox from "./ChatBox";
 import InputBox from "./InputBox";
 import { useRef,useContext, useState, useEffect } from "react";
-import Theme from "./UI/Theme";
+import Theme from "../UI/Theme";
 import CallContainer from "./CallContainer";
 import { useNavigate } from "react-router-dom";
-import '../styles/chat.css'
-
+import '/src/styles/chat.css'
+import SearchAdd from "./SearchAdd";
 const Chat = ({user})=>{
 
   const vidRef = useRef(null);
   var [clickCount,setClickCount] = useState(0);
   const navigate = useNavigate();
-  if(user.isLoggedIn===false) navigate('/form?type=login');
+  if(user.isLoggedIn===false||!user) navigate('/form?type=login');
   const [callInfo,setCallInfo] = useState(
     {
       onCall:false,
@@ -53,6 +53,7 @@ const Chat = ({user})=>{
     <ContainerWrapper>
       <ContactsContainer>
         <Header hType={'userHeader'} _name={'Siddharth'}/>
+        <SearchAdd />
         <Contacts/>
       </ContactsContainer>
       <HeaderWrapper>

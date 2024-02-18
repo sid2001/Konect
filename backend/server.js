@@ -33,7 +33,8 @@ const sessionOptions = {
     secure:true,
     httpOnly:true,
     sameSite:'none',
-    expires:new Date(Date.now() + 1 * 3600000)
+    expires:new Date(Date.now() + 1 * 3600000),
+    maxAge:8*60*60*1000
   },
   store:storeOptions 
 };

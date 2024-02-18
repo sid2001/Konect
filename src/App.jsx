@@ -1,6 +1,6 @@
 import {BrowserRouter,Routes,Route,Link,Navigate} from 'react-router-dom';
-import Chat from './components/Chat';
-import Home from './components/Home';
+import Chat from './components/Chat/Chat';
+import Home from './components/Chat/Home';
 import Forms from './components/Forms/Forms';
 import getUser from './utils/getUser';
 import { UserContext } from './components/Context/userContext';

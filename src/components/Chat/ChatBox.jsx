@@ -1,5 +1,5 @@
-import chatHistory from "../data/chatHistory";
-import Card from "./UI/card";
+import chatHistory from "../../data/chatHistory";
+import Card from "../UI/card";
 
 const ChatBox = ()=>{
   let id = 1;
@@ -26,13 +26,12 @@ const ChatBox = ()=>{
   return(
     <div className="ChatContainer">
       <ul>
-        <div className="overlay">
         {
         chatHistory().map((data)=>{
           return <li key={id++}>{chatCard(data)}</li>
         })
       }
-        </div>
+
       </ul>
     </div>
   )

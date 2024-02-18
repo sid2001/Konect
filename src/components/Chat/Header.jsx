@@ -1,4 +1,4 @@
-import callIcon from '../assets/call.svg';
+import callIcon from '/src/assets/call.svg';
 
 
 const Header = ({hType,_name,setCallInfo})=>{
