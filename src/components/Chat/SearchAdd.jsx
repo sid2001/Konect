@@ -1,12 +1,15 @@
 import plus from '/src/assets/plus.svg';
 import search from '/src/assets/search.svg';
-import { useState } from 'react';
 import dropdown from '/src/assets/dropdown.png';
 import cross from '/src/assets/cross.png';
-const SearchAdd = ()=>{
+import { useState } from 'react';
+const SearchAdd = ({setSearch})=>{
   const [drop,setDrop] = useState(false);
   const dropHandler = ()=>{
     setDrop((s)=>
+      s?false:true
+    )
+    setSearch((s)=>
       s?false:true
     )
   }

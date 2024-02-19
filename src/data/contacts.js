@@ -4,7 +4,7 @@ const contacts = [{
   pfp:pfp,
   id:'s224fa',
   username:'siea',
-  lastmessage:'helado skdkiefakkl,sdfswefwfe,sasdfaasflkjkljlkjlkjljjlkjlkjljjlkjlkjklj',
+  lastmessage:"heladoskdk ief akkl sdfds sdf dsf sd sdfswefwfe, sasdfaasflkjkljlkjlkjljjlkjlkjljjlkjlkjklj",
   online:'false',
   lastseen:'12/02/2024',
   newmessages:3
@@ -23,7 +23,7 @@ const contacts = [{
   id:'s24234fa',
   username:'siea',
   lastmessage:'helado skdkiefakkl,sdfswefwfe,sasdfaasflkjkljlkjlkjljjlkjlkjljjlkjlkjklj',
-  online:'false',
+  online:'true',
   lastseen:'12/02/2024',
   newmessages:3
 },{
@@ -76,7 +76,7 @@ const contacts = [{
   pfp:pfp,
   id:'s223f4fa',
   username:'siea',
-  lastmessage:'helado skdkiefakkl,sdfswefwfe,sasdfaasflkjkljlkjlkjljjlkjlkjljjlkjlkjklj',
+  lastmessage:"helado skdkiefakkl,sdfswefwfe,sasdfaasflkjkljlkjlkjljjlkjlkjljjlkjlkjklj",
   online:'false',
   lastseen:'12/02/2024',
   newmessages:3
@@ -85,7 +85,25 @@ const contacts = [{
   pfp:pfp,
   id:'s2sf4fa',
   username:'siea',
-  lastmessage:'helado skdkiefakkl,sdfswefwfe,sasdfaasflkjkljlkjlkjljjlkjlkjljjlkjlkjklj',
+  lastmessage:'heladoskdkiefakkl,sdfswefwfe,sasdfaasflkjkljlkjlkjljjlkjlkjljjlkjlkjklj',
+  online:'false',
+  lastseen:'12/02/2024',
+  newmessages:3
+},{
+  name:'sisa',
+  pfp:pfp,
+  id:'s2sfsds4fa',
+  username:'siea',
+  lastmessage:'heladoskdkiefakkl,sdfswefwfe,sasdfaasflkjkljlkjlkjljjlkjlkjljjlkjlkjklj',
+  online:'false',
+  lastseen:'12/02/2024',
+  newmessages:3
+},{
+  name:'sisa',
+  pfp:pfp,
+  id:'s2sf4aslkfa',
+  username:'siea',
+  lastmessage:'heladoskdkiefakkl,sdfswefwfe,sasdfaasflkjkljlkjlkjljjlkjlkjljjlkjlkjklj',
   online:'false',
   lastseen:'12/02/2024',
   newmessages:3

@@ -13,6 +13,7 @@ import '/src/styles/chat.css'
 import SearchAdd from "./SearchAdd";
 const Chat = ({user})=>{
 
+  const [search,setSearch] = useState(false);
   const vidRef = useRef(null);
   var [clickCount,setClickCount] = useState(0);
   const navigate = useNavigate();
@@ -53,8 +54,8 @@ const Chat = ({user})=>{
     <ContainerWrapper>
       <ContactsContainer>
         <Header hType={'userHeader'} _name={'Siddharth'}/>
-        <SearchAdd />
-        <Contacts/>
+        <SearchAdd setSearch={setSearch}/>
+        <Contacts search={search}/>
       </ContactsContainer>
       <HeaderWrapper>
       <Header setCallInfo={setCallInfo} hType={'friendHeader'} _name={'Sisa'}/>
