@@ -107,6 +107,24 @@ const contacts = [{
   online:'false',
   lastseen:'12/02/2024',
   newmessages:3
+},{
+  name:'sisa',
+  pfp:pfp,
+  id:'s2saslkfa',
+  username:'siea',
+  lastmessage:'heladoskdkiefakkl,sdfswefwfe,sasdfaasflkjkljlkjlkjljjlkjlkjljjlkjlkjklj',
+  online:'false',
+  lastseen:'12/02/2024',
+  newmessages:3
+},{
+  name:'sisa',
+  pfp:pfp,
+  id:'s2ssf4aslkfa',
+  username:'siea',
+  lastmessage:'heladoskdkiefakkl,sdfswefwfe,sasdfaasflkjkljlkjlkjljjlkjlkjljjlkjlkjklj',
+  online:'false',
+  lastseen:'12/02/2024',
+  newmessages:3
 }]
 
 export default contacts;
