@@ -8,16 +8,21 @@ import InputBox from "./InputBox";
 import { useRef,useContext, useState, useEffect } from "react";
 import Theme from "../UI/Theme";
 import CallContainer from "./CallContainer";
+import SearchAdd from "./SearchAdd";
+import Loader from "../Loader";
 import { useNavigate } from "react-router-dom";
 import '/src/styles/chat.css'
-import SearchAdd from "./SearchAdd";
-const Chat = ({user})=>{
 
+const Chat = ({user,status})=>{
   const [search,setSearch] = useState(false);
   const vidRef = useRef(null);
   var [clickCount,setClickCount] = useState(0);
-  const navigate = useNavigate();
-  if(user.isLoggedIn===false||!user) navigate('/form?type=login');
+  const navigate = useNavigate(); 
+  useEffect(()=>{
+    console.log(user);
+    if((user.isLoggedIn===false||!user)&&status===1) navigate('/form?type=login');
+  },[user,navigate,status]);
+  
   const [callInfo,setCallInfo] = useState(
     {
       onCall:false,
@@ -49,7 +54,7 @@ const Chat = ({user})=>{
   const vidClickHandler = ()=>{
     setClickCount((c)=>c+1);
   }
-  
+  if(status===1)
   return(
     <ContainerWrapper>
       <ContactsContainer>
@@ -70,6 +75,7 @@ const Chat = ({user})=>{
       :''}
     </ContainerWrapper>
   )
+  else return <Loader/>
 }
 
 export default Chat;

@@ -43,11 +43,11 @@ const App = () => {
           <Routes >
             <Route path ='/' element={<Home/>} />
             <Route path ="/form" 
-              element={<Forms/>} 
+              element={<Forms setStatus={setStatus} setUser={setUser}/>} 
             />
             <Route 
               path = '/chat' 
-              element = {<Chat user={user}/>}
+              element = {<Chat user={user} status={status}/>}
             />
           </Routes>
         </BrowserRouter>

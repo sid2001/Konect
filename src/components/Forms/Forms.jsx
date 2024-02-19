@@ -7,7 +7,7 @@ import { googleLogout,useGoogleLogin } from "@react-oauth/google";
 import googleIcon from "/src/assets/google-icon.svg";
 import { getUserInfo,authToken } from "../../utils/googleAuth";
 
-const Forms = ()=>{
+const Forms = ({setStatus,setUser})=>{
   const [authCode,setAuthCode] = useState('');
   const [verifiedToken,setVerifiedToken] = useState(false);
   const {search} = useLocation();
@@ -22,12 +22,19 @@ const Forms = ()=>{
     setMode(m=>((m+1)%2));
   }
   useEffect(()=>{
-    if(authCode)
+    if(authCode){
+      setStatus(0);
     authToken(authCode.code)
     .then(res=>{
-      console.log('server res for auth code: ',res);
+      console.log('server res for auth code: ',res.data);
       if(res.status===202)
+      { 
+        setUser(()=>{
+          setStatus(1);
+          return res.data
+        })
         navigate('/chat');
+      }
       else{
         console.log('error logging in: ',res);
       }
@@ -35,7 +42,8 @@ const Forms = ()=>{
     .catch(err=>{
       console.error("error while sending auth code",err)
     })
-  },[authCode]);
+  }
+  },[authCode,navigate]);
 
   //send backend the code to obatin tokens instead
   // useEffect(()=>{
