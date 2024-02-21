@@ -11,6 +11,7 @@ const authRoute = require('./routes/auth');
 const cors = require('cors');
 const app = express();
 const User = require('./models/Users');
+const userRoute = require('./routes/user');
 const {OAuth2Client} = require('google-auth-library');
 require('dotenv').config();
 
@@ -57,16 +58,26 @@ app.use((req,res,next)=>{
   if(req.session.userId){
     User.findById(req.session.userId)
     .then((user)=>{
+      console.log(user)
+      if(user==='null'||!user){
+        req.username = 'guest' + Math.random();
+        req.userType = 0;
+        req.isLoggedIn = false;
+        console.log('session user not found: ',req.session);
+        return next();//NOTE: next('route') will work only in middleware functions that were loaded by using the app.METHOD() or router.METHOD() functions.
+        // console.log('helekajl asldftest');
+      }
+      req.user = user;
       req.userId = user._id;
       req.userType = 1;
       req.username = user.username;
       req.name = user.name;
       req.isLoggedIn = true;
-      next();
+      return next();
     })
     .catch(err=>{
       console.log(err);
-      throw new Error('Error while session searching for user!');
+      next(new Error('Error while session searching for user!'));
     })
   }
   else {
@@ -78,6 +89,7 @@ app.use((req,res,next)=>{
 })
 
 app.use(authRoute);
+app.use('/user/',userRoute);
 app.use('/',(req,res,next)=>{
   res.json({'message':'hello'});
   next();

@@ -1,7 +1,8 @@
-import contacts from "/src/data/contacts.js"
+// import contacts from "/src/data/contacts.js"
+import defaultProfile from "/src/assets/default-profile.png"
 import ContactsContainer from "./ContactsContainer"
-const Contacts = ({search})=>{
-  
+const Contacts = ({search,contacts})=>{
+  console.log('contacts:' ,contacts);
   return(
     <ContactsContainer classN = {`contacts ${search?'drop':''}`}>
       {
@@ -9,7 +10,7 @@ const Contacts = ({search})=>{
           return(
           <div key={contact.id} id={contact.id} className="contact-card">
             <div className={`contact-picture ${contact.online==='true'?'online':''}`}>
-              <img src={contact.pfp} alt="" />
+              <img src={contact.pfp?contact.pfp:defaultProfile} alt='photo' />
             </div>
             <div className="contact-detail">
               <div className="contact-detail-header">

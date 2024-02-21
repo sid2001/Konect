@@ -10,21 +10,27 @@ import { useState,useEffect } from 'react';
 
 const App = () => {
   const [user,setUser] = useState('');
-  const [status,setStatus] = useState(0);
-  console.log('user: ',user);
+  const [status,setStatus] = useState('0');
+  console.log('status: ',status);
   // const navigate = useNavigate();
   // useEffect(()=>{
     console.log('user hook',user);
-    useEffect(()=>{
-      console.log('user updated',user);
-      if(user) setStatus(1);
-    },[user]);
+    // useEffect(()=>{
+    //   console.log('user hook status 1: ',status)
+    //   console.log('user updated',user);
+    //   if((user!==undefined||user!==null)&&status==='0'){
+    //     console.log('user hook status: ',status)
+    //     setStatus('1');
+    //   }
+    // },[user,status]);
 
     useEffect(()=>{  
-      setStatus(0); 
+      setStatus('0'); 
       getUser()
       .then(res=>{
       console.log('user info recvd: ',res);
+      console.log('status kjkj',status);
+      setStatus('1');
       setUser(res);
     })
     .catch(err=>{

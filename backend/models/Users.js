@@ -8,6 +8,29 @@ const userSchema = new Schema({
     type:String,
     required:true
   },
+  tagname:{
+    type:String
+  },
+  requests:[
+    {
+      sender:{
+        id:{
+          type:mongoose.ObjectId,
+          ref:'User'
+        },
+        name:{
+          type:String
+        },
+        username:{
+          type:String
+        }
+      },
+      time:{
+        type:Date
+      }
+    }
+  ] 
+  ,
   email:{
     type: String,
     required:true
@@ -44,16 +67,19 @@ const userSchema = new Schema({
       _name:{
         type:String
       },
+      _id:{
+        type:mongoose.ObjectId
+      },
       username:{
         type:String
-      },
+      }
     }
   ],
   is_active:Boolean,
   
 })
 
-// userSchema.methods.getContacts = function(){
-//   return this.contacts;
-// }
+userSchema.methods.getContacts = function(){
+  return this.contacts;
+}
 module.exports = mongoose.model('User', userSchema);
