@@ -12,6 +12,7 @@ import SearchAdd from "./SearchAdd";
 import Loader from "../Loader";
 import { getContacts } from "../../api/user";
 import { useNavigate } from "react-router-dom";
+import { getAllUsers } from "/src/api/test.js";
 import '/src/styles/chat.css'
 
 const Chat = ({user})=>{
@@ -24,7 +25,13 @@ const Chat = ({user})=>{
     useEffect(()=>{
       if(user.isLoggedIn===false) navigate('/form?type=login');
       console.log('fetching contacts')
-      getContacts()
+      // getContacts()
+      // .then(data=>{
+      //   console.log('recv data: ',data.data);
+      //   setContacts(data.data);
+      // })
+      // .catch(console.error)
+      getAllUsers()
       .then(data=>{
         console.log('recv data: ',data.data);
         setContacts(data.data);

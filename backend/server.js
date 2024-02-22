@@ -9,10 +9,11 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 const wss = require('./wsServer');
 const authRoute = require('./routes/auth');
 const cors = require('cors');
-const app = express();
 const User = require('./models/Users');
 const userRoute = require('./routes/user');
+const testRoute = require('./routes/test');
 const {OAuth2Client} = require('google-auth-library');
+const app = express();
 require('dotenv').config();
 
 const credentials = {key:fs.readFileSync("./key.pem"),cert:fs.readFileSync("./cert.pem")};
@@ -88,6 +89,7 @@ app.use((req,res,next)=>{
   }
 })
 
+app.use('/test',testRoute);
 app.use(authRoute);
 app.use('/user/',userRoute);
 app.use('/',(req,res,next)=>{

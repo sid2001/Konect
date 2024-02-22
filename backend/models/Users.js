@@ -8,7 +8,7 @@ const userSchema = new Schema({
     type:String,
     required:true
   },
-  tagname:{
+  tagname:{//update in registration
     type:String
   },
   requests:[
@@ -81,5 +81,20 @@ const userSchema = new Schema({
 
 userSchema.methods.getContacts = function(){
   return this.contacts;
+}
+userSchema.statics.getAllUsers = async function(){
+  try{
+  const users = await this.find({});
+  return users.map(user=>{
+    const payload = {
+      name:user.name,
+      username:user.username,
+      id : user._id
+    }
+    return payload;
+  })}
+  catch(err){
+    console.error('Error while fetching users: ',err);
+  }
 }
 module.exports = mongoose.model('User', userSchema);
