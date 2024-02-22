@@ -14,25 +14,23 @@ import { getContacts } from "../../api/user";
 import { useNavigate } from "react-router-dom";
 import '/src/styles/chat.css'
 
-const Chat = ({user,status})=>{
+const Chat = ({user})=>{
   const [search,setSearch] = useState(false);
   const [contacts,setContacts] = useState('');
   const [clickCount,setClickCount] = useState(0);
   const vidRef = useRef(null);
   const navigate = useNavigate();
-
-  useEffect(()=>{
-    console.log('user effect: ',user);
-    console.log('status: ',status)
-    if((user.isLoggedIn===false||!user)&&status==='1') navigate('/form?type=login');
-    // if(user.isLoggedIn===true)
-    getContacts()
-    .then(data=>{
-      console.log('recv data: ',data.data);
-      setContacts(data.data);
-    })
-    .catch(console.error)
-  },[user,navigate,status]);
+  // console.log('user effect: ',user);
+    useEffect(()=>{
+      if(user.isLoggedIn===false) navigate('/form?type=login');
+      console.log('fetching contacts')
+      getContacts()
+      .then(data=>{
+        console.log('recv data: ',data.data);
+        setContacts(data.data);
+      })
+      .catch(console.error)
+    },[user,navigate])
 
   const [callInfo,setCallInfo] = useState(
     {
@@ -65,13 +63,12 @@ const Chat = ({user,status})=>{
   const vidClickHandler = ()=>{
     setClickCount((c)=>c+1);
   }
-  if(status==='1')
   return(
     <ContainerWrapper>
       <ContactsContainer>
         <Header hType={'userHeader'} _name={'Siddharth'}/>
         <SearchAdd setSearch={setSearch}/>
-        <Contacts search={search} contacts={contacts}/>
+        {contacts?<Contacts search={search} contacts={contacts}/>:''}
       </ContactsContainer>
       <HeaderWrapper>
       <Header setCallInfo={setCallInfo} hType={'friendHeader'} _name={'Sisa'}/>
@@ -86,7 +83,6 @@ const Chat = ({user,status})=>{
       :''}
     </ContainerWrapper>
   )
-  else return <Loader/>
 }
 
 export default Chat;

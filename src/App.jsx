@@ -2,6 +2,7 @@ import {BrowserRouter,Routes,Route,Link,Navigate} from 'react-router-dom';
 import Chat from './components/Chat/Chat';
 import Home from './components/Chat/Home';
 import Forms from './components/Forms/Forms';
+import TestComponent from './components/TestComponent';
 import getUser from './utils/getUser';
 import { UserContext } from './components/Context/userContext';
 import { GoogleOAuthProvider } from '@react-oauth/google';
@@ -11,34 +12,24 @@ import { useState,useEffect } from 'react';
 const App = () => {
   const [user,setUser] = useState('');
   const [status,setStatus] = useState('0');
-  console.log('status: ',status);
-  // const navigate = useNavigate();
-  // useEffect(()=>{
-    console.log('user hook',user);
-    // useEffect(()=>{
-    //   console.log('user hook status 1: ',status)
-    //   console.log('user updated',user);
-    //   if((user!==undefined||user!==null)&&status==='0'){
-    //     console.log('user hook status: ',status)
-    //     setStatus('1');
-    //   }
-    // },[user,status]);
+  console.log('status from app: ',status);
+  console.log('user from app: ',user);
 
-    useEffect(()=>{  
-      setStatus('0'); 
+    useEffect(()=>{ 
+      if(status==='0')
       getUser()
       .then(res=>{
       console.log('user info recvd: ',res);
-      console.log('status kjkj',status);
-      setStatus('1');
+      // console.log('status kjkj',status);
       setUser(res);
+      setStatus('1');
     })
     .catch(err=>{
       console.log('cant connect to servers!!');
       console.log(err);
     }
     )
-    },[])
+    },[status,user])
     console.log('credentials',import.meta.env.VITE_GOOGLE_AUTH_CLIENT_KEY);
     
   // },[])
@@ -53,7 +44,7 @@ const App = () => {
             />
             <Route 
               path = '/chat' 
-              element = {<Chat user={user} status={status}/>}
+              element = {<TestComponent user={user} status={status}/>}
             />
           </Routes>
         </BrowserRouter>
