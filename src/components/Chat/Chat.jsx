@@ -14,14 +14,29 @@ import { getContacts } from "../../api/user";
 import { useNavigate } from "react-router-dom";
 import { getAllUsers } from "/src/api/test.js";
 import '/src/styles/chat.css'
+import connectChat from '/src/services/WebSocketServer.js'
 
 const Chat = ({user})=>{
   const [search,setSearch] = useState(false);
   const [contacts,setContacts] = useState('');
   const [clickCount,setClickCount] = useState(0);
+  const [selectedUser,setSelectedUser] = useState('');
+  const [ws,setWs] = useState(null);
+
   const vidRef = useRef(null);
   const navigate = useNavigate();
-  // console.log('user effect: ',user);
+    useEffect(()=>{
+      if(user.isLoggedIn===true&&ws===null){
+        setWs((w)=>{
+          if(w!==null){
+            console.log('closing ws');
+            w.close();
+          }
+          console.log('openeing ws');
+          return connectChat();
+        });
+      }
+    },[])
     useEffect(()=>{
       if(user.isLoggedIn===false) navigate('/form?type=login');
       console.log('fetching contacts')
@@ -38,7 +53,6 @@ const Chat = ({user})=>{
       })
       .catch(console.error)
     },[user,navigate])
-
   const [callInfo,setCallInfo] = useState(
     {
       onCall:false,
@@ -49,7 +63,6 @@ const Chat = ({user})=>{
     width:500,
     height:500
   })
-  
   useEffect(()=>{
     const timeout = setTimeout(()=>{
       setClickCount(0);
@@ -75,12 +88,12 @@ const Chat = ({user})=>{
       <ContactsContainer>
         <Header hType={'userHeader'} _name={'Siddharth'}/>
         <SearchAdd setSearch={setSearch}/>
-        {contacts?<Contacts search={search} contacts={contacts}/>:''}
+        {contacts?<Contacts search={search} setSelectedUser={setSelectedUser} contacts={contacts}/>:''}
       </ContactsContainer>
       <HeaderWrapper>
       <Header setCallInfo={setCallInfo} hType={'friendHeader'} _name={'Sisa'}/>
-      <ChatBox />
-      <InputBox/>
+      <ChatBox selectedUser={selectedUser}/>
+      <InputBox ws={ws}/>
       </HeaderWrapper>
 
       {(callInfo.onCall)?
