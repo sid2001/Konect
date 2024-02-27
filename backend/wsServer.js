@@ -5,6 +5,29 @@ const heartbeat = () => {
   console.log('heartbeat');
   this.isAlive = true;
 }
+const clients = new Map();
+
+const messageHandler = (data,ws)=>{
+  try{
+    console.log(data);
+    switch(data.type){
+      case 'msg':{ 
+        console.log('forwarding message to: ',data.recipient);
+        clients.get(data.recipient).send(JSON.stringify(data));
+        break;
+      }
+      case 'ack':{
+        clients.set(data.username,ws);
+        break;
+      }
+      default :{
+        throw Error('Invalid message type: ' + data.type)
+      }
+    }
+  }catch(err){
+    console.error(err);
+  }
+}
 
 const WebSocketSever = (httpsServer,cb)=>{
 
@@ -49,7 +72,10 @@ const WebSocketSever = (httpsServer,cb)=>{
       console.log('closed socket');
     })
     ws.on('pong',heartbeat);
-    ws.on('message',(m)=>{console.log('message: ',m)});
+    ws.on('message',(m)=>{
+      const json = JSON.parse(m);
+      messageHandler(json,ws);
+    });
     ws.send('connection established!!')
     // cb();
   })

@@ -6,7 +6,6 @@ const Header = ({hType,_name,setCallInfo})=>{
   const classname = hType==='userHeader'?hType:'friendHeader';
   const  nameclass = hType==='userHeader'?'user-name':'friend-name';
   const picture = hType==='userHeader'?'/src/assets/profile.svg':'/src/assets/friend.svg'
-  console.log(picture);
 
   const callHandler = (e)=>{
     e.preventDefault();

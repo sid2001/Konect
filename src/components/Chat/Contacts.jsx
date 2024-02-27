@@ -2,14 +2,21 @@
 import defaultProfile from "/src/assets/default-profile.png"
 import ContactsContainer from "./ContactsContainer"
 
-const Contacts = ({search,contacts,setSelectedUser})=>{
+const Contacts = ({search,contacts,dispatchSelectedUser,selectedUserState})=>{
   console.log('contacts:' ,contacts);
+  const userSelectHandler = (u)=>{
+    console.log('select handler',u);
+    dispatchSelectedUser({
+      type:'changed_user',
+      selectedUser:u
+    })
+  }
   return(
     <ContactsContainer classN = {`contacts ${search?'drop':''}`}>
       {
         contacts.map((contact)=>{
           return(
-          <div key={contact.id} id={contact.id} className="contact-card" onClick={()=>{setSelectedUser(contact.id)}}>
+          <div key={contact.id} id={contact.id} className={`contact-card ${selectedUserState.selectedUser===contact.username?'selected-user':''}`} onClick={()=>{userSelectHandler(contact.username)}}>
             <div className={`contact-picture ${contact.online==='true'?'online':''}`}>
               <img src={contact.pfp?contact.pfp:defaultProfile} alt='photo' />
             </div>

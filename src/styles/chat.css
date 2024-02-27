@@ -250,7 +250,8 @@ button.call-btn{
   position: relative;
   display:flex;
   flex-direction: column;
-  border-radius: 20px;
+  /* border-radius: 20px; */
+  padding-top: 5px;
   width: 100%;
   height: 89%;
   border: none;
@@ -269,7 +270,7 @@ button.call-btn{
   max-width: 100%;
   justify-content:center;
   justify-items: center;
-  margin:0px 0px 0px 2px;
+  margin:2px 0px 2px 2px;
   border-radius: 10px;
   /* margin: 5px 0px 5px 0px; */
   min-height:10%;
@@ -279,6 +280,9 @@ button.call-btn{
 .contact-card:hover{
   cursor: pointer;
   box-shadow: 0 0 4px 1px rgba(255, 255, 255, 0.3);
+}
+.contact-card.selected-user {
+  border: rgba(183, 46, 190, 0.639) solid 1px;
 }
 .contact-picture{
   position: relative;
@@ -358,4 +362,17 @@ button.call-btn{
 /* Handle on hover */
 .contact-container.contacts::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+#dog-image{
+  position: relative;
+  margin: auto;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
+#dog-image>img{
+  opacity: 0.6;
+  width: 100%;
+  height: 100%;
 }

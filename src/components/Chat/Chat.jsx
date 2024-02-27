@@ -5,54 +5,67 @@ import ContactsContainer from "./ContactsContainer";
 import Contacts from "./Contacts";
 import ChatBox from "./ChatBox";
 import InputBox from "./InputBox";
-import { useRef,useContext, useState, useEffect } from "react";
-import Theme from "../UI/Theme";
 import CallContainer from "./CallContainer";
-import SearchAdd from "./SearchAdd";
 import Loader from "../Loader";
+import SearchAdd from "./SearchAdd";
+import { chatHistoryContext,chatHistoryDispatchContext } from "../Context/ChatContext";
+import { useRef,useContext, useState, useEffect, useReducer } from "react";
 import { getContacts } from "../../api/user";
 import { useNavigate } from "react-router-dom";
 import { getAllUsers } from "/src/api/test.js";
-import '/src/styles/chat.css'
+import Theme from "../UI/Theme";
+import { chatUserStateReducer,initialState } from "../../reducer/chatReducer";
+import { chatHistoryReducer, initialChatHistory} from "../../reducer/chatReducer";
 import connectChat from '/src/services/WebSocketServer.js'
+import dog from '/src/assets/dog.svg';
+import '/src/styles/chat.css';
 
 const Chat = ({user})=>{
+  const [selectedUserState,dispatchSelectedUser] = useReducer(chatUserStateReducer,initialState);
+  const [chatHistory,dispatchChatHistory] = useReducer(chatHistoryReducer,initialChatHistory);
   const [search,setSearch] = useState(false);
   const [contacts,setContacts] = useState('');
   const [clickCount,setClickCount] = useState(0);
-  const [selectedUser,setSelectedUser] = useState('');
   const [ws,setWs] = useState(null);
-
+  const selectedUser = selectedUserState.username;
   const vidRef = useRef(null);
   const navigate = useNavigate();
-    useEffect(()=>{
-      if(user.isLoggedIn===true&&ws===null){
-        setWs((w)=>{
-          if(w!==null){
-            console.log('closing ws');
-            w.close();
-          }
-          console.log('openeing ws');
-          return connectChat();
-        });
+  console.log('user from chat: ',user);
+  useEffect(()=>{
+    if(user.isLoggedIn===true){
+      console.log('')
+      setWs((w)=>{
+        if(w!==null){
+          console.log('closing ws');
+          w.close();
+        }
+        console.log('openeing ws');
+        return connectChat(user.username,dispatchChatHistory);
+      });
+      return ()=>{
+        const wss = ws;
+        if(wss!==null)wss.close();
       }
-    },[])
-    useEffect(()=>{
-      if(user.isLoggedIn===false) navigate('/form?type=login');
-      console.log('fetching contacts')
-      // getContacts()
-      // .then(data=>{
-      //   console.log('recv data: ',data.data);
-      //   setContacts(data.data);
-      // })
-      // .catch(console.error)
-      getAllUsers()
-      .then(data=>{
-        console.log('recv data: ',data.data);
-        setContacts(data.data);
-      })
-      .catch(console.error)
-    },[user,navigate])
+    }
+  },[user])
+  useEffect(()=>{
+    if(user.isLoggedIn===false) navigate('/form?type=login');
+    else{
+    console.log('fetching contacts')
+    // getContacts()
+    // .then(data=>{
+    //   console.log('recv data: ',data.data);
+    //   setContacts(data.data);
+    // })
+    // .catch(console.error)
+    getAllUsers()
+    .then(data=>{
+      console.log('recv data: ',data.data);
+      setContacts(data.data);
+    })
+    .catch(console.error)
+  }
+  },[user,navigate])
   const [callInfo,setCallInfo] = useState(
     {
       onCall:false,
@@ -84,24 +97,38 @@ const Chat = ({user})=>{
     setClickCount((c)=>c+1);
   }
   return(
-    <ContainerWrapper>
-      <ContactsContainer>
-        <Header hType={'userHeader'} _name={'Siddharth'}/>
-        <SearchAdd setSearch={setSearch}/>
-        {contacts?<Contacts search={search} setSelectedUser={setSelectedUser} contacts={contacts}/>:''}
-      </ContactsContainer>
-      <HeaderWrapper>
-      <Header setCallInfo={setCallInfo} hType={'friendHeader'} _name={'Sisa'}/>
-      <ChatBox selectedUser={selectedUser}/>
-      <InputBox ws={ws}/>
-      </HeaderWrapper>
+    <chatHistoryContext.Provider value={chatHistory}>
+      <chatHistoryDispatchContext.Provider value={dispatchChatHistory}>
+        <ContainerWrapper>
+          <ContactsContainer>
+            <Header hType={'userHeader'} _name={user['name']['first']}/>
+            <SearchAdd setSearch={setSearch}/>
+            {contacts?<Contacts search={search} selectedUserState={selectedUserState} dispatchSelectedUser={dispatchSelectedUser} contacts={contacts}/>:''}
+          </ContactsContainer>
+          <HeaderWrapper>
+            {
+              selectedUserState.selectedUser?
+              <>
+                <Header setCallInfo={setCallInfo} hType={'friendHeader'} _name={selectedUserState.selectedUser}/>
+                <ChatBox selectedUserState={selectedUserState}/>
+                <InputBox ws={ws} user={user} dispatchSelectedUser={dispatchSelectedUser} selectedUserState={selectedUserState} value={selectedUserState.messages[selectedUser]}/>
+              </>
+              :
+              <div id="dog-image">
+                <img src={dog} alt="Hi!!" />
+              </div>
+            }
+          </HeaderWrapper>
 
-      {(callInfo.onCall)?
-          <div onClick={vidClickHandler} ref={vidRef} className="video-box-m">
-            <CallContainer/>
-          </div>
-      :''}
-    </ContainerWrapper>
+          {(callInfo.onCall)?
+            <div onClick={vidClickHandler} ref={vidRef} className="video-box-m">
+              <CallContainer/>
+            </div>
+            :''
+          }
+        </ContainerWrapper>
+      </chatHistoryDispatchContext.Provider>
+    </chatHistoryContext.Provider>
   )
 }
 

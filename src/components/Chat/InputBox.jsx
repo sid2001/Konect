@@ -1,18 +1,49 @@
 import sendButton from '/src/assets/send-button.png';
 import attachButton from '/src/assets/attachment.png';
 import smiley from '/src/assets/smiley.png'
-import { useState } from 'react';
-const InputBox = ()=>{
-  const [message,setMessage] = useState();
+import { useContext, useState } from 'react';
+import { chatHistoryDispatchContext } from '../Context/ChatContext';
+
+const InputBox = ({dispatchSelectedUser,selectedUserState,user,ws})=>{
+  // const [message,setMessage] = useState();
+  const message = selectedUserState.messages[selectedUserState.selectedUser];
+  const dispatchChatHistory = useContext(chatHistoryDispatchContext);
   const messageHandler = (e)=>{
-    console.log(e.target.value);
+    dispatchSelectedUser({
+      type:'edited_message',
+      message:e.target.value
+    })
   }
+  // console.log(message);
+  const sendMessageHandler = ()=>{
+    const payload = {
+      type:'msg',
+      sender:user.username,
+      recipient:selectedUserState.selectedUser,
+      data:message
+    }
+    try{
+    ws.send(JSON.stringify(payload));
+    dispatchChatHistory({
+      type:'send_message',
+      sender:user.username,
+      selectedUser:selectedUserState.selectedUser,
+      message:message
+    })
+    dispatchSelectedUser({
+      type:'send_message',
+    })
+    }catch(err){
+    console.error('error sending message!!',err);
+    }
+  } 
+
   return(
-    <div className='input-area'>
+    <div key={selectedUserState.selectedUser} className='input-area'>
       <img className='smiley' src={smiley} alt="" />
       <img className='attach' src={attachButton} alt="" />
-      <textarea type="text" rows={1} style={{resize:'none'}} placeholder='message' onChange={messageHandler}/>
-      <button><img className='send' src={sendButton} alt="send" /></button>
+      <textarea type="text" rows={1} style={{resize:'none'}} placeholder='message' onChange={messageHandler} value={message}/>
+      <button><img className='send' src={sendButton} alt="send" onClick={sendMessageHandler}/></button>
     </div>
   )
 }

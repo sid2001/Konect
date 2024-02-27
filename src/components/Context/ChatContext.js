@@ -6,3 +6,5 @@ export const callInfoContext = createContext(
     to:'',
   }
 );
+export const chatHistoryContext = createContext(null);
+export const chatHistoryDispatchContext = createContext(null);

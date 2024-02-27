@@ -1,8 +1,11 @@
+import { useContext } from "react";
 import chatHistory from "../../data/chatHistory";
-import Card from "../UI/card";
 
-const chatCard = (data)=>{
-  const classname = data.type==='1'?'user-message':'friend-message';
+import Card from "../UI/card";
+import { chatHistoryContext } from "../Context/ChatContext";
+
+const chatCard = (data,selectedUser)=>{
+  const classname = data.sender===selectedUser?'friend-message':'user-message';
   return(
     <div className={classname}>
       <Card>
@@ -26,14 +29,15 @@ const getUserChat = (id)=>{
 
 }
 
-const ChatBox = ({selectedUser})=>{
+const ChatBox = ({selectedUserState})=>{
+  const chatHistory = useContext(chatHistoryContext);
   let id = 1;
   return(
     <div className="ChatContainer">
       <ul>
         {
-        chatHistory().map((data)=>{
-          return <li key={id++}>{chatCard(data)}</li>
+        chatHistory[selectedUserState['selectedUser']]?.map((data)=>{
+          return <li key={id++}>{chatCard(data,selectedUserState['selectedUser'])}</li>
         })
       }
       </ul>
