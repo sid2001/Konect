@@ -26,7 +26,7 @@ const Login = ()=>{
       if(res.status===202){
         console.log('logged In successfully!!');
         console.log(res);
-        user.setUser(res.data);
+        user.setUser(JSON.parse(res.data));
         navigate("/chat");
       }
     })

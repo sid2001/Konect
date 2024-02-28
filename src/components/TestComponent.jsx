@@ -1,4 +1,5 @@
 import Loader from "./Loader";
+import { redirect } from "react-router-dom";
 import Chat from "./Chat/Chat";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -7,9 +8,9 @@ const TestComponent = ({status,user})=>{
   // useEffect(()=>{
   //   if(status==='1'&&user.isLoggedIn===false){
   //     console.log("checking user");
-  //     navigate('/form?type=login');
+  //     redirect('/form?type=login');
   //   }
-  // },[user,navigate])
+  // },[user,status])
   // const flag = status==='0';
   return(
     status==='0'?<Loader/>:<Chat user={user}/>

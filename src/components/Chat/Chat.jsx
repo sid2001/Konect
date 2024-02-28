@@ -101,7 +101,7 @@ const Chat = ({user})=>{
       <chatHistoryDispatchContext.Provider value={dispatchChatHistory}>
         <ContainerWrapper>
           <ContactsContainer>
-            <Header hType={'userHeader'} _name={user['name']['first']}/>
+            <Header key={user.name} hType={'userHeader'} _name={user.name?.first}/>
             <SearchAdd setSearch={setSearch}/>
             {contacts?<Contacts search={search} selectedUserState={selectedUserState} dispatchSelectedUser={dispatchSelectedUser} contacts={contacts}/>:''}
           </ContactsContainer>
