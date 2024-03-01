@@ -13,6 +13,7 @@ const User = require('./models/Users');
 const userRoute = require('./routes/user');
 const testRoute = require('./routes/test');
 const {OAuth2Client} = require('google-auth-library');
+const {redisClient} = require('./redisClient');
 const app = express();
 require('dotenv').config();
 
@@ -40,7 +41,7 @@ const sessionOptions = {
   },
   store:storeOptions 
 };
-
+ 
 app.use((req,res,next)=>{
   req.googleAuthClient = googleAuthClient;
   req.CLIENT_ID = process.env.CLIENT_ID;
