@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 const ws = require('ws');
-
+const clientAuth = require('./utilities/scripts/sessionAuth');
+var sessionHandle;
 const heartbeat = () => {
   console.log('heartbeat');
   this.isAlive = true;
@@ -29,9 +30,25 @@ const messageHandler = (data,ws)=>{
   }
 }
 
-const WebSocketSever = (httpsServer,cb)=>{
+const verifyClient = async (info,cb)=>{
+  sessionHandle(info.req,{},async ()=>{
+    const isAuth = await clientAuth(info.req.session.userId);
+    // console.log('isAuth: ', isAuth)
+    if(isAuth) {
+      cb(true) 
+    }
+    else{
+      cb(false,401,'Unauthorized')
+    }
+  });
+  
+}
 
+const WebSocketSever = (httpsServer,sessionHandler,cb)=>{
+
+  sessionHandle = sessionHandler;
   const wss = new ws.WebSocketServer({
+    verifyClient: verifyClient,
     server:httpsServer,
     path:'/chat',
     clientTracking:true,
@@ -60,7 +77,7 @@ const WebSocketSever = (httpsServer,cb)=>{
   //  // implement someting in future
   // })
   wss.on('error',console.error);
-  wss.on('headers',(res,server)=>{
+  wss.on('headers',(header,req)=>{
     //will implement something in future
   })
   wss.on('connection',(ws)=>{

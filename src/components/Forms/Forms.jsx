@@ -26,12 +26,13 @@ const Forms = ({setStatus,setUser})=>{
       setStatus(0);
     authToken(authCode.code)
     .then(res=>{
-      console.log('server res for auth code: ',res.data);
+      const data = JSON.parse(res.data)
+      console.log('server res for auth code: ',data);
       if(res.status===202)
       { 
         setUser(()=>{
           setStatus(1);
-          return res.data
+          return JSON.parse(data)
         })
         navigate('/chat');
       }
