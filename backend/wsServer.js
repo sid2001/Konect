@@ -12,12 +12,13 @@ const messageHandler = (data,ws)=>{
   try{
     console.log(data);
     switch(data.type){
-      case 'msg':{ 
+      case 'msg':{
         console.log('forwarding message to: ',data.recipient);
         clients.get(data.recipient).send(JSON.stringify(data));
         break;
       }
       case 'ack':{
+        ws.username = data.username;
         clients.set(data.username,ws);
         break;
       }
@@ -86,6 +87,7 @@ const WebSocketSever = (httpsServer,sessionHandler,cb)=>{
     ws.isAlive = true;
     ws.on('error',console.error);
     ws.on('close',()=>{
+      clients.delete(ws.username);
       console.log('closed socket');
     })
     ws.on('pong',heartbeat);
@@ -93,7 +95,7 @@ const WebSocketSever = (httpsServer,sessionHandler,cb)=>{
       const json = JSON.parse(m);
       messageHandler(json,ws);
     });
-    ws.send('connection established!!')
+    ws.send(JSON.stringify({type:'ack',data:'acknowledged!!'}))
     // cb();
   })
 }

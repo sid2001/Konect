@@ -169,25 +169,9 @@ button.call-btn{
 .input-area>textarea::-webkit-scrollbar{
   display: none;
 }
-.video-box-m, .video-box-fs{
-  position: fixed;
-  display: flex;
-  /* overflow: hidden; */
-  left: 0px;
-  top: 0px;
-  width: 400px;
-  min-width: 400px;
-  border: 1px white solid;
-}
-#localVideo{
-  position: relative;
-  width: 90%;
-  height: 80%;
-  justify-self: center;
-}
-.resize-container{
+/* .resize-container{
   position: absolute;
-}
+} */
 
 .search-add-wrapper{
   position: relative;

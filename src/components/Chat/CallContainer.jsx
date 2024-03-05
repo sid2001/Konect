@@ -1,6 +1,34 @@
-import { useEffect } from "react";
+import {useRef,useState, useEffect } from "react";
+import Theme from "../UI/Theme";
 
-const CallContainer = ()=>{
+const CallContainer = ({callInfo})=>{
+  const [clickCount,setClickCount] = useState(0);
+  const vidRef = useRef(null);
+  
+  const [windowSize,setWindowSize] = useState({
+    width:500,
+    height:500
+  })
+  useEffect(()=>{
+    const timeout = setTimeout(()=>{
+      setClickCount(0);
+    },1000);
+    if(clickCount===2){
+      console.log(vidRef.current.className);
+      const theme = Theme(vidRef.current.className);
+      console.log(theme.style);
+      vidRef.current.style.height = theme.style.height;
+      vidRef.current.style.width = theme.style.width;
+      vidRef.current.className = theme.className;
+    }
+    return ()=>{
+      clearTimeout(timeout);
+    }
+  },[clickCount])
+
+  const vidClickHandler = ()=>{
+    setClickCount((c)=>c+1);
+  }
 
   useEffect(()=>{
     const handleSuccess = (stream) =>{
@@ -30,11 +58,17 @@ const CallContainer = ()=>{
   },[]);
 
   return (
-    <>
+    
+    (callInfo.onCall)?
+      <div id="video-container" onClick={vidClickHandler} ref={vidRef} className="video-box-m">
       <video id='localVideo' autoPlay muted playsInline></video>
       <video id='remoteVideo' autoPlay playsInline></video>
-    </>
+    </div>
+    :''
   )
 }
 
 export default CallContainer;
+
+
+            

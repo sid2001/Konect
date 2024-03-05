@@ -9,28 +9,32 @@ import CallContainer from "./CallContainer";
 import Loader from "../Loader";
 import SearchAdd from "./SearchAdd";
 import { chatHistoryContext,chatHistoryDispatchContext } from "../Context/ChatContext";
-import { useRef,useContext, useState, useEffect, useReducer } from "react";
+import { useContext, useState, useEffect, useReducer } from "react";
 import { getContacts } from "../../api/user";
 import { useNavigate } from "react-router-dom";
 import { getAllUsers } from "/src/api/test.js";
-import Theme from "../UI/Theme";
 import { chatUserStateReducer,initialState } from "../../reducer/chatReducer";
 import { chatHistoryReducer, initialChatHistory} from "../../reducer/chatReducer";
 import connectChat from '/src/services/WebSocketServer.js'
 import dog from '/src/assets/dog.svg';
 import '/src/styles/chat.css';
+import '/src/styles/vc.css';
 
 const Chat = ({user})=>{
   const [selectedUserState,dispatchSelectedUser] = useReducer(chatUserStateReducer,initialState);
   const [chatHistory,dispatchChatHistory] = useReducer(chatHistoryReducer,initialChatHistory);
   const [search,setSearch] = useState(false);
   const [contacts,setContacts] = useState('');
-  const [clickCount,setClickCount] = useState(0);
   const [ws,setWs] = useState(null);
   const selectedUser = selectedUserState.username;
-  const vidRef = useRef(null);
   const navigate = useNavigate();
   console.log('user from chat: ',user);
+  const [callInfo,setCallInfo] = useState(
+    {
+      onCall:false,
+      to:'',
+    }
+  )
   useEffect(()=>{
     if(user.isLoggedIn===true){
       console.log('')
@@ -66,36 +70,7 @@ const Chat = ({user})=>{
     .catch(console.error)
   }
   },[user,navigate])
-  const [callInfo,setCallInfo] = useState(
-    {
-      onCall:false,
-      to:'',
-    }
-  )
-  const [windowSize,setWindowSize] = useState({
-    width:500,
-    height:500
-  })
-  useEffect(()=>{
-    const timeout = setTimeout(()=>{
-      setClickCount(0);
-    },1000);
-    if(clickCount===2){
-      console.log(vidRef.current.className);
-      const theme = Theme(vidRef.current.className);
-      console.log(theme.style);
-      vidRef.current.style.height = theme.style.height;
-      vidRef.current.style.width = theme.style.width;
-      vidRef.current.className = theme.className;
-    }
-    return ()=>{
-      clearTimeout(timeout);
-    }
-  },[clickCount])
-
-  const vidClickHandler = ()=>{
-    setClickCount((c)=>c+1);
-  }
+  
   return(
     <chatHistoryContext.Provider value={chatHistory}>
       <chatHistoryDispatchContext.Provider value={dispatchChatHistory}>
@@ -119,13 +94,9 @@ const Chat = ({user})=>{
               </div>
             }
           </HeaderWrapper>
-
-          {(callInfo.onCall)?
-            <div onClick={vidClickHandler} ref={vidRef} className="video-box-m">
-              <CallContainer/>
-            </div>
-            :''
-          }
+          {callInfo.onCall?
+          <CallContainer callInfo={callInfo} setCallInfo={setCallInfo}/>
+          :''}
         </ContainerWrapper>
       </chatHistoryDispatchContext.Provider>
     </chatHistoryContext.Provider>

@@ -32,7 +32,7 @@ const Forms = ({setStatus,setUser})=>{
       { 
         setUser(()=>{
           setStatus(1);
-          return JSON.parse(data)
+          return data
         })
         navigate('/chat');
       }

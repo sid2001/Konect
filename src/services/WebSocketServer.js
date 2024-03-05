@@ -16,6 +16,10 @@ const messageHandler = (data,dispatchChatHistory)=>{
         console.log('pinging!!');
         break;
       }
+      case 'ack':{
+        console.log('acknowledged');
+        break;
+      }
       default:{
         throw Error('Invalid message type: ',data.type);
       }
@@ -47,6 +51,7 @@ ws.addEventListener('open',(e)=>{
 })
 ws.onmessage = (e)=>{
   try{
+    // console.log('on message',e.data)
     const json = JSON.parse(e.data);
     messageHandler(json,dispatchChatHistory);
   }catch(err){
