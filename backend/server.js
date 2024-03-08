@@ -5,18 +5,19 @@ const csrf = require('csrf');
 const mongoose = require("mongoose");
 const https = require('node:https');
 const fs = require('fs');
+const url = require('url');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const wss = require('./wsServer');
 const authRoute = require('./routes/auth');
 const cors = require('cors');
 const User = require('./models/Users');
+const sfu = require('./middlewares/MediaSoup.js')
 const userRoute = require('./routes/user');
 const testRoute = require('./routes/test');
 const {OAuth2Client} = require('google-auth-library');
 const {redisClient} = require('./redisClient');
 const app = express();
 require('dotenv').config();
-
 const credentials = {key:fs.readFileSync("./key.pem"),cert:fs.readFileSync("./cert.pem")};
 const storeOptions = new MongoDBStore({
   uri:process.env.DBURI,
@@ -91,6 +92,7 @@ app.use((req,res,next)=>{
   }
 })
 
+// app.use('/sfu/',sfu(httpsServer))//sfu route implement
 app.use('/test',testRoute);
 app.use(authRoute);
 app.use('/user/',userRoute);
@@ -114,8 +116,27 @@ mongoose.connect(process.env.DBURI,{dbName:'technic'})
     {
       host:process.env.HOST,port:process.env.PORT},
       ()=>{
+        app.server = httpsServer;
         console.log(`Listening to PORT:${process.env.PORT}`);
-        wss(httpsServer,sessionHandler,()=>{console.log('wss attached!!')});
+
+        httpsServer.on('upgrade', function upgrade(request, socket, head) {
+        // console.log(socket);
+        const pathname = url.parse(request.url).pathname;
+        if(pathname==='/sfu'){
+          sfu(request,socket,head,httpsServer)
+        }
+        else if(pathname==='/chat'){
+          wss(request,socket,head,httpsServer,sessionHandler)
+        }
+        else{
+          console.log('invalid ws path')
+        }
+        // wss.handleUpgrade(request, socket, head, function done(ws) {
+        // wss.emit('connection', ws, request);
+        })
+
+        // wss(httpsServer,sessionHandler,()=>{console.log('wss attached!!')});
+        // sfu(httpsServer);
     }
     );
 }).catch(err=>{

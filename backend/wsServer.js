@@ -2,9 +2,10 @@
 const ws = require('ws');
 const clientAuth = require('./utilities/scripts/sessionAuth');
 var sessionHandle;
-const heartbeat = () => {
+const heartbeat = (ws) => {
   console.log('heartbeat');
-  this.isAlive = true;
+  // console.log(this);
+  ws.isAlive = true;
 }
 const clients = new Map();
 
@@ -45,23 +46,36 @@ const verifyClient = async (info,cb)=>{
   
 }
 
-const WebSocketSever = (httpsServer,sessionHandler,cb)=>{
+const WebSocketServe = (request,socket,head,httpsServer,sessionHandler)=>{
 
   sessionHandle = sessionHandler;
   const wss = new ws.WebSocketServer({
     verifyClient: verifyClient,
-    server:httpsServer,
+    // server:httpsServer,
+    noServer:true,
     path:'/chat',
     clientTracking:true,
 
   });
+  wss.handleUpgrade(request, socket, head, function done(ws) {
+      wss.emit('connection', ws, request);
+  })
+//   httpsServer.on('upgrade', function upgrade(request, socket, head) {
+//     console.log(socket);
+//     wss.handleUpgrade(request, socket, head, function done(ws) {
+//       wss.emit('connection', ws, request);
+// })})
   const interval = setInterval(()=>{
     wss.clients.forEach((sock)=>{
       console.log(wss.clients.size);
       console.log('pinging');
-      if(sock.isAlive === false) return sock.terminate();
+      if(sock.isAlive === false){
+        // sock.emit('close');//why not emitting
+        // console.log(sock)
+        return sock.terminate();
+    }
 
-      // sock.isAlive = false;s
+      sock.isAlive = false;
       sock.ping('pinging',()=>{sock.send(JSON.stringify({type:'ping',data:''}))});
       
     });
@@ -81,7 +95,7 @@ const WebSocketSever = (httpsServer,sessionHandler,cb)=>{
   wss.on('headers',(header,req)=>{
     //will implement something in future
   })
-  wss.on('connection',(ws)=>{
+  wss.on('connection',(ws,request)=>{
 
     console.log('ws connection received!!')
     ws.isAlive = true;
@@ -90,7 +104,10 @@ const WebSocketSever = (httpsServer,sessionHandler,cb)=>{
       clients.delete(ws.username);
       console.log('closed socket');
     })
-    ws.on('pong',heartbeat);
+    ws.on('pong',()=>{
+        heartbeat(ws);
+      }
+    );
     ws.on('message',(m)=>{
       const json = JSON.parse(m);
       messageHandler(json,ws);
@@ -100,4 +117,4 @@ const WebSocketSever = (httpsServer,sessionHandler,cb)=>{
   })
 }
 
-module.exports = WebSocketSever;
+module.exports = WebSocketServe;
