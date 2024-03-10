@@ -1,14 +1,25 @@
 import callIcon from '/src/assets/call.svg';
 
-
-const Header = ({hType,_name,setCallInfo})=>{
-
+const Header = ({hType,_name,setCallInfo,ws,selectedUserState})=>{
   const classname = hType==='userHeader'?hType:'friendHeader';
   const  nameclass = hType==='userHeader'?'user-name':'friend-name';
   const picture = hType==='userHeader'?'/src/assets/profile.svg':'/src/assets/friend.svg'
-
+  // console.log('from headher',selectedUserState);
   const callHandler = (e)=>{
     e.preventDefault();
+    const payload = {
+      type:'connect_call',
+      recipient: selectedUserState.selectedUser,
+      peerInfo:{
+        username:_name,
+        pfp:''
+      }
+    }
+    try{
+      ws.send(JSON.stringify(payload));
+    }catch(err){
+      console.error('error making call');
+    }
     setCallInfo((s)=>{
       return({
         ...s,

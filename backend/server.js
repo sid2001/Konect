@@ -122,15 +122,24 @@ mongoose.connect(process.env.DBURI,{dbName:'technic'})
         httpsServer.on('upgrade', function upgrade(request, socket, head) {
         // console.log(socket);
         const pathname = url.parse(request.url).pathname;
-        if(pathname==='/sfu'){
+        sessionHandler(request,{},()=>{
+          console.log(request.session);
+          if(pathname==='/sfu'){
           sfu(request,socket,head,httpsServer)
-        }
-        else if(pathname==='/chat'){
-          wss(request,socket,head,httpsServer,sessionHandler)
-        }
-        else{
-          console.log('invalid ws path')
-        }
+            }
+          else if(pathname==='/chat'){
+              wss.handleUpgrade(request, socket, head, function done(ws) {
+              wss.emit('connection', ws, request);
+            })
+            // wss(request,socket,head,httpsServer,sessionHandler)
+          }
+          else{
+            console.log('invalid ws path')
+          }
+          
+        });
+        // console.log(request.session);
+        
         // wss.handleUpgrade(request, socket, head, function done(ws) {
         // wss.emit('connection', ws, request);
         })

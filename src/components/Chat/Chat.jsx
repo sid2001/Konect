@@ -6,13 +6,15 @@ import Contacts from "./Contacts";
 import ChatBox from "./ChatBox";
 import InputBox from "./InputBox";
 import CallContainer from "./CallContainer";
+import IncomingCall from "../CallNotification/IncomingCall";
 import Loader from "../Loader";
 import SearchAdd from "./SearchAdd";
-import { chatHistoryContext,chatHistoryDispatchContext } from "../Context/ChatContext";
+import { chatHistoryContext,chatHistoryDispatchContext,incomingCallContext,dispatchIncomingCallContext } from "../Context/ChatContext";
 import { useContext, useState, useEffect, useReducer } from "react";
 import { getContacts } from "../../api/user";
 import { useNavigate } from "react-router-dom";
 import { getAllUsers } from "/src/api/test.js";
+import { incomingCallReducer,initialNotificationState } from "../../reducer/notification";
 import { chatUserStateReducer,initialState } from "../../reducer/chatReducer";
 import { chatHistoryReducer, initialChatHistory} from "../../reducer/chatReducer";
 import connectChat from '/src/services/WebSocketServer.js'
@@ -23,6 +25,7 @@ import '/src/styles/vc.css';
 const Chat = ({user})=>{
   const [selectedUserState,dispatchSelectedUser] = useReducer(chatUserStateReducer,initialState);
   const [chatHistory,dispatchChatHistory] = useReducer(chatHistoryReducer,initialChatHistory);
+  const [incomingCall, dispatchIncomingCall] = useReducer(incomingCallReducer,initialNotificationState);
   const [search,setSearch] = useState(false);
   const [contacts,setContacts] = useState('');
   const [ws,setWs] = useState(null);
@@ -44,7 +47,7 @@ const Chat = ({user})=>{
           w.close();
         }
         console.log('openeing ws');
-        return connectChat(user.username,dispatchChatHistory);
+        return connectChat(user.username,dispatchChatHistory,dispatchIncomingCall);
       });
       return ()=>{
         const wss = ws;
@@ -70,36 +73,44 @@ const Chat = ({user})=>{
     .catch(console.error)
   }
   },[user,navigate])
-  
+  // useEffect(()=>{
+  //   if(incomingCall)
+  // },[incomingCall])
+  console.log(selectedUserState)
   return(
-    <chatHistoryContext.Provider value={chatHistory}>
-      <chatHistoryDispatchContext.Provider value={dispatchChatHistory}>
-        <ContainerWrapper>
-          <ContactsContainer>
-            <Header key={user.name} hType={'userHeader'} _name={user.name?.first}/>
-            <SearchAdd setSearch={setSearch}/>
-            {contacts?<Contacts search={search} selectedUserState={selectedUserState} dispatchSelectedUser={dispatchSelectedUser} contacts={contacts}/>:''}
-          </ContactsContainer>
-          <HeaderWrapper>
-            {
-              selectedUserState.selectedUser?
-              <>
-                <Header setCallInfo={setCallInfo} hType={'friendHeader'} _name={selectedUserState.selectedUser}/>
-                <ChatBox selectedUserState={selectedUserState}/>
-                <InputBox ws={ws} user={user} dispatchSelectedUser={dispatchSelectedUser} selectedUserState={selectedUserState} value={selectedUserState.messages[selectedUser]}/>
-              </>
-              :
-              <div id="dog-image">
-                <img src={dog} alt="Hi!!" />
-              </div>
-            }
-          </HeaderWrapper>
-          {callInfo.onCall?
-          <CallContainer callInfo={callInfo} setCallInfo={setCallInfo}/>
-          :''}
-        </ContainerWrapper>
-      </chatHistoryDispatchContext.Provider>
-    </chatHistoryContext.Provider>
+    <incomingCallContext.Provider value={incomingCall}>
+      <dispatchIncomingCallContext.Provider value={dispatchIncomingCall}>
+        <chatHistoryContext.Provider value={chatHistory}>
+          <chatHistoryDispatchContext.Provider value={dispatchChatHistory}>
+            {incomingCall.ringing?<IncomingCall callerInfo={incomingCall.peerInfo}/>:''}
+            <ContainerWrapper>
+              <ContactsContainer>
+                <Header hType={'userHeader'} _name={user.name?.first}/>
+                <SearchAdd setSearch={setSearch}/>
+                {contacts?<Contacts search={search} selectedUserState={selectedUserState} dispatchSelectedUser={dispatchSelectedUser} contacts={contacts}/>:''}
+              </ContactsContainer>
+              <HeaderWrapper>
+                {
+                  selectedUserState.selectedUser?
+                  <>
+                    <Header setCallInfo={setCallInfo} hType={'friendHeader'} _name={selectedUserState.selectedUser} ws={ws} selectedUserState = {selectedUserState}/>
+                    <ChatBox selectedUserState={selectedUserState}/>
+                    <InputBox ws={ws} user={user} dispatchSelectedUser={dispatchSelectedUser} selectedUserState={selectedUserState} value={selectedUserState.messages[selectedUser]}/>
+                  </>
+                  :
+                  <div id="dog-image">
+                    <img src={dog} alt="Hi!!" />
+                  </div>
+                }
+              </HeaderWrapper>
+              {callInfo.onCall?
+              <CallContainer callInfo={callInfo} setCallInfo={setCallInfo}/>
+              :''}
+            </ContainerWrapper>
+          </chatHistoryDispatchContext.Provider>
+        </chatHistoryContext.Provider>
+      </dispatchIncomingCallContext.Provider>
+    </incomingCallContext.Provider>
   )
 }
 

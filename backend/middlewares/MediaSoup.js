@@ -2,6 +2,9 @@ const ws = require('ws');
 const EventEmitter = require('node:events');
 const SFUServer = require('../medisoupServer');
 
+const signalHandler = (type,)=>{
+  
+}
 
 const sfu = (request,socket,head,httpsServer) => {
   // const serv = async (req,res,next) =>{
@@ -24,15 +27,16 @@ const sfu = (request,socket,head,httpsServer) => {
   const eventEmitter = new EventEmitter();
   SignallingServer.on('connection',(ws)=>{
     console.log('new connection');
-    eventEmitter.emit('createSFU');
+    let server;
+    eventEmitter.emit('createSFU',server);
   })
   
-  eventEmitter.on('createSFU',async ()=>{
+  eventEmitter.on('createSFU',async (serv)=>{
     const server = new SFUServer();
-  
-    await server.createWorker();
-    await server.createRouter();
-    await server.getRouterRtpCapabilities();
+    serv = server;
+    // await server.createWorker();
+    // await server.createRouter();
+    // await server.getRouterRtpCapabilities();
   })
   
 

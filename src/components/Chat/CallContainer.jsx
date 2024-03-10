@@ -4,8 +4,9 @@ import cross from "/src/assets/cross.png"
 
 const CallContainer = ({callInfo,setCallInfo})=>{
   const [clickCount,setClickCount] = useState(0);
-  const [mode,setMode] = useState(import.meta.env.VITE_MODE)
+  const [mode,setMode] = useState(import.meta.env.VITE_MODE);
   const vidRef = useRef(null);
+  
   console.log('video ref',vidRef)
   // const [windowSize,setWindowSize] = useState({
   //   width:500,
@@ -84,6 +85,20 @@ const CallContainer = ({callInfo,setCallInfo})=>{
   }
   const closeVideo = ()=>{
     setCallInfo(p=>{
+
+      return (
+        {...p,onCall:false}
+      )
+    }
+    )
+  }
+  const hangUpCall = ()=>{
+    const indx = getNodeFromRef(vidRef.current.childNodes,'video-box local-video');
+    const localSource = vidRef.current.childNodes[indx].childNodes[0];
+    const tracks = localSource.srcObject.getTracks();
+    tracks.forEach(track=>track.stop());
+    localSource.srcObject = null;
+    setCallInfo(p=>{
       return (
         {...p,onCall:false}
       )
@@ -104,6 +119,9 @@ const CallContainer = ({callInfo,setCallInfo})=>{
           <video id='remoteVideo' autoPlay playsInline></video>
         </div>
         <div className="video-controls">
+          <div id="hang-up" onClick={hangUpCall}>
+            <img  src='/src/assets/hang-up.png' alt="" />
+          </div>
         </div>
     </div>
     :''

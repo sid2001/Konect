@@ -23,6 +23,14 @@ const messageHandler = (data,ws)=>{
         clients.set(data.username,ws);
         break;
       }
+      case 'connect_call':{
+        const payload = {
+          type:'incoming_call',
+          peerInfo : {...data.peerInfo},
+        }
+        clients.get(data.recipient).send(JSON.stringify(payload));
+        break;
+      }
       default :{
         throw Error('Invalid message type: ' + data.type)
       }
@@ -33,7 +41,7 @@ const messageHandler = (data,ws)=>{
 }
 
 const verifyClient = async (info,cb)=>{
-  sessionHandle(info.req,{},async ()=>{
+  // sessionHandle(info.req,{},async ()=>{
     const isAuth = await clientAuth(info.req.session.userId);
     // console.log('isAuth: ', isAuth)
     if(isAuth) {
@@ -42,13 +50,14 @@ const verifyClient = async (info,cb)=>{
     else{
       cb(false,401,'Unauthorized')
     }
-  });
+  // });
   
 }
 
-const WebSocketServe = (request,socket,head,httpsServer,sessionHandler)=>{
 
-  sessionHandle = sessionHandler;
+// const WebSocketServe = (request,socket,head,httpsServer,sessionHandler)=>{
+
+  // sessionHandle = sessionHandler;
   const wss = new ws.WebSocketServer({
     verifyClient: verifyClient,
     // server:httpsServer,
@@ -57,17 +66,18 @@ const WebSocketServe = (request,socket,head,httpsServer,sessionHandler)=>{
     clientTracking:true,
 
   });
-  wss.handleUpgrade(request, socket, head, function done(ws) {
-      wss.emit('connection', ws, request);
-  })
+  // wss.handleUpgrade(request, socket, head, function done(ws) {
+  //     wss.emit('connection', ws, request);
+  // })
+
 //   httpsServer.on('upgrade', function upgrade(request, socket, head) {
 //     console.log(socket);
 //     wss.handleUpgrade(request, socket, head, function done(ws) {
 //       wss.emit('connection', ws, request);
 // })})
   const interval = setInterval(()=>{
+    console.log(clients.size);
     wss.clients.forEach((sock)=>{
-      console.log(wss.clients.size);
       console.log('pinging');
       if(sock.isAlive === false){
         // sock.emit('close');//why not emitting
@@ -85,7 +95,6 @@ const WebSocketServe = (request,socket,head,httpsServer,sessionHandler)=>{
     clearInterval(interval);
     console.log('WebSocket server closed.');
   })
-
   // wss.on('listening',(s)=>{
   //   console.log('listening event',s);
   //   cb();
@@ -115,6 +124,6 @@ const WebSocketServe = (request,socket,head,httpsServer,sessionHandler)=>{
     ws.send(JSON.stringify({type:'ack',data:'acknowledged!!'}))
     // cb();
   })
-}
+// }
 
-module.exports = WebSocketServe;
+module.exports = wss;

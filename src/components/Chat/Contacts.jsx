@@ -11,6 +11,7 @@ const Contacts = ({search,contacts,dispatchSelectedUser,selectedUserState})=>{
       selectedUser:u
     })
   }
+  // console.log('from contactss',selectedUserState);
   return(
     <ContactsContainer classN = {`contacts ${search?'drop':''}`}>
       {

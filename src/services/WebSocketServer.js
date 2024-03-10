@@ -1,6 +1,5 @@
 // import WebSocket from 'ws';
-
-const messageHandler = (data,dispatchChatHistory)=>{
+const messageHandler = (data,dispatchChatHistory,dispatchIncomingCall)=>{
   console.log('incoming message: ',data);
   try{
     switch(data.type){
@@ -20,6 +19,13 @@ const messageHandler = (data,dispatchChatHistory)=>{
         console.log('acknowledged');
         break;
       }
+      case 'incoming_call':{
+        dispatchIncomingCall({
+          type:'incoming_call',
+          peerInfo:data.peerInfo
+        })
+        break;
+      }
       default:{
         throw Error('Invalid message type: ',data.type);
       }
@@ -28,8 +34,7 @@ const messageHandler = (data,dispatchChatHistory)=>{
     console.error(err);
   }
 }
-
-const connectChat = (username,dispatchChatHistory)=>{
+const connectChat = (username,dispatchChatHistory,dispatchIncomingCall)=>{
   const ws = new WebSocket("wss://127.0.0.1:8081/chat")
 
   const heartbeat = ()=>{
@@ -53,7 +58,7 @@ ws.onmessage = (e)=>{
   try{
     // console.log('on message',e.data)
     const json = JSON.parse(e.data);
-    messageHandler(json,dispatchChatHistory);
+    messageHandler(json,dispatchChatHistory,dispatchIncomingCall);
   }catch(err){
     console.log(err);
   }
