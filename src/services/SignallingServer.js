@@ -13,7 +13,7 @@ async function messageHandler(e) {
       const payload = {
         type:'create_room',
         data:{
-          username:user
+          username:ssc._user
         }
       }
       ssc.send(JSON.stringify(payload));
@@ -55,7 +55,7 @@ const connectSignallingServer =  ({username,track})=>{
   ssc.onopen = (event)=>{
     console.log('connected to ss',event);
   }
-  user = username;
+  ssc.username = username;
   ssc.onmessage = messageHandler;
   ssc.addEventListener('close',()=>{console.log('ss connection closed!')});
   return ssc;

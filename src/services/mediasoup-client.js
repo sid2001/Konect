@@ -31,7 +31,7 @@ class MediaSoupClient {
     this.roomId = roomId;
     this.username = username;
     this.params = {track:localVideoSource,...params};
-    // console.log('msc params: ',this.params);
+    // console.log('constructor: ',username);
   }
   createDevice = async ()=>{
     this.device = new Device();
@@ -55,22 +55,25 @@ class MediaSoupClient {
       type:'getRtpCapabilities',
       data :{
         type:this.type,
-        roomId:this.roomId
+        roomId:this.roomId,
+        // username:this.username
       }
     }
     await this.ss.send(JSON.stringify(payload));
   }
   createSendTransport = async ()=>{
+    console.log('createSendTransport: ',this.username);
     const payload = {
       type:'createWebRtcTransport',
       data:{
-        type:this.type,
-        roomId:this.roomId
+        type:'producer',
+        roomId:this.roomId,
+        username:this.username
       }
     }
     this.ss.send(JSON.stringify(payload))
   }
-  
+
   createProducerTransport = async () => {
     this.producerTransport = this.device.createSendTransport(this.sendTransportParams);
     console.log('created webrtc transport.');
@@ -102,7 +105,8 @@ class MediaSoupClient {
           kind:parameters.kind,
           rtpParameters:parameters.rtpParameters,
           appData: parameters.appData,
-          roomId:this.roomId
+          roomId:this.roomId,
+          username:this.username
         }
       }
       try{
@@ -142,7 +146,9 @@ class MediaSoupClient {
     const payload = {
       type:'createWebRtcTransport',
       data:{
-        type:this.type,
+        type:'consumer',
+        roomId:this.roomId,
+        username:this.username
       }
     }
     this.ss.send(JSON.stringify(payload))

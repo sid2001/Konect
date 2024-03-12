@@ -14,9 +14,9 @@ const SignallingServer = new ws.WebSocketServer({
   clientTracking:true
 })
 // const intverval = setInterval(()=>{
-//   console.log('rooms: ',rooms);
-//   console.log('producers: ',producers)
-//   console.log('clients: ',clients)
+  // console.log('rooms: ',rooms);
+  // console.log('producers: ',producers)
+  // console.log('clients: ',clients)
 // },2000)
 const ss = SignallingServer;
 const eventEmitter = new EventEmitter();
@@ -32,7 +32,9 @@ async function signallingMessageHandler(data) {
   // console.log('room: ',room)
   switch(json.type){
     case 'create_room':{
-      eventEmitter.emit('createSFU',this);
+      // console.log('username: ',json.data.username); 
+      const roomId = crypto.randomBytes(16).toString("hex");
+      eventEmitter.emit('createSFU',this,json.data,roomId);
       break;
     }
     case 'getRtpCapabilities':{
@@ -46,11 +48,12 @@ async function signallingMessageHandler(data) {
       break;
     }
     case 'createWebRtcTransport':{
-      await room.createTransport(json.data.type);
+      // console.log('createWebRtcTransport: ',json.data);
+      const producerParams = await room.createTransport(json.data.type,json.data.username);
       const payload = {
         type:'producerParams',
         data:{
-          params:room.producerParams
+          params:producerParams
         }
       }
       this.send(JSON.stringify(payload));
@@ -62,13 +65,15 @@ async function signallingMessageHandler(data) {
     }
     case 'transportProduce':{
       const producerId = await room.producerTransportProduce(json.data);
+      console.log('sending producer Id: ',producerId);
       const payload = {
         type:'producerId',
         data:{
           producerId: producerId
         }
       }
-      const username = this.username;
+      const username = rooms.get(roomId).username;
+      // console.log(this.username);
       producers.set(roomId,{
         ...producers.get(roomId),
         [username]:producerId
@@ -96,9 +101,8 @@ ss.on('connection',(ws)=>{
 })
   
 
-eventEmitter.on('createSFU',async (ws)=>{
-  const server = new SFUServer();
-  const roomId = crypto.randomBytes(16).toString("hex");
+eventEmitter.on('createSFU',async (ws,data,roomId)=>{
+  const server = new SFUServer(roomId);
   console.log("New room generated. room ID:",roomId);
   rooms.set(roomId,server);
   const payload = {
@@ -111,6 +115,7 @@ eventEmitter.on('createSFU',async (ws)=>{
   await server.createWorker();
   await server.createRouter();
   await server.getRouterRtpCapabilities();
+  server.username = data.username;
   // console.log(ws);
   ws.send(JSON.stringify(payload));
 })

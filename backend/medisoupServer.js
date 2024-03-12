@@ -32,7 +32,11 @@ const tranportOptions = {
   preferUDP: true,
 }
 class SFUServer {
-  constructor(){}
+  constructor(roomId){
+    this.roomId = roomId
+    this.producerMap = new Map();
+    this.consumerMap = new Map();
+  }
 
   async createWorker() {
     this.worker = await mediasoup.createWorker(
@@ -61,16 +65,27 @@ class SFUServer {
     console.log('rtp capabilities set.');
   }
 
-  createTransport = async (type)=>{
+  createTransport = async (type,username)=>{
     switch(type){
       case "producer":
-        console.log("creating producer transport");
-        [this.producerTransport,this.producerParams] = await this.getTransport();
-        break;
+        console.log("creating producer transport for: ",username);
+        var [producerTransport,producerParams] = await this.getTransport();
+        console.log(username);
+        this.producerMap.set(username,{
+          ...this.producerMap.get(username),
+          producerTransport:producerTransport,
+          producerParams:producerParams
+        })
+        return producerParams;
       case "consumer":
-        console.log('creating consumer transport');
-        [this.consumerTransport,this.consumerParams] = await this.getTransport();
-        break;
+        console.log('creating consumer transport for: ',username);
+        var [consumerTransport,consumerParams] = await this.getTransport();
+        this.consumerMap.set(username,{
+          ...this.consumerMap.get(username),
+          consumerTransport:consumerTransport,
+          consumerParams:consumerParams
+        })
+        return consumerParams;
     }
   }
 
@@ -95,26 +110,29 @@ class SFUServer {
     }
     return [transport,transportParams];
   }
-  producerTransportConnect = async ({dtlsParameters})=>{
+  producerTransportConnect = async ({dtlsParameters,username})=>{
     // console.log("DTLS params...",{dtlsParameters});
     // console.log("DTLS params...");
-    await this.producerTransport.connect({dtlsParameters});
-    console.log('producer transport connected');
+    await this.producerMap.get(username).producerTransport.connect({dtlsParameters});
+    console.log('producer transport connected for: ',username);
   }
-  producerTransportProduce = async ({kind,rtpParameters,appData})=>{
+  producerTransportProduce = async ({kind,rtpParameters,appData,username})=>{
     // console.log(this.producerTransport)
-    this.producer = await this.producerTransport.produce({
+    let producer = await this.producerMap.get(username).producerTransport.produce({
       kind,
       rtpParameters,
     })
-
-    console.log('Producer ID: ',this.producer.id,this.producer.kind);
-
-    this.producer.on('transportclose',()=>{
-      console.log('transport for this producer closed', this.producer.id);
-      this.producer.close();
+    this.producerMap.set(username,{
+      ...this.producerMap.get(username),
+      producer:producer
     })
-    return this.producer.id;
+    console.log('Producer ID: ',this.producerMap.get(username).producer.id,this.producerMap.get(username).producer.kind);
+
+    producer.on('transportclose',()=>{
+      console.log('transport for this producer closed', this.producer.id);
+      producer.close();
+    })
+    return this.producerMap.get(username).producer.id;
   }
 }
 
