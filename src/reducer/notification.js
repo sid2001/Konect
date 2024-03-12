@@ -19,6 +19,11 @@ export const incomingCallReducer = (state,action)=>{
       }
       return s;
     }
+    // case 'failed_call':{
+    //   const s = {
+
+    //   }
+    // }
     default :{
       console.log("Invalid action, Notification.");
     }

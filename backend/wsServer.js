@@ -29,9 +29,25 @@ const messageHandler = (data,ws)=>{
         }
         try{
         clients.get(data.recipient).send(JSON.stringify(payload));
+        ws.send(JSON.stringify(
+          {
+            type:'ringing'
+          }
+        ))
         }catch(err){
+          const payload = {
+            type:'connect_call_failed',
+          }
+          ws.send(JSON.stringify(payload));
           console.error(err);
         }
+        break;
+      }
+      case 'call_declined':{
+        const payload = {
+          type:'call_declined'
+        }
+        clients.get(data.peerInfo).send(JSON.stringify(payload));
         break;
       }
       default :{

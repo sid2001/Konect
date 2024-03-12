@@ -1,5 +1,5 @@
 // import WebSocket from 'ws';
-const messageHandler = (data,dispatchChatHistory,dispatchIncomingCall)=>{
+const messageHandler = (data,dispatchChatHistory,dispatchIncomingCall,setCallStatus)=>{
   // console.log('incoming message: ',data);
   try{
     switch(data.type){
@@ -20,10 +20,25 @@ const messageHandler = (data,dispatchChatHistory,dispatchIncomingCall)=>{
         break;
       }
       case 'incoming_call':{
+        console.log('incomding call from: ',data.peerInfo);
         dispatchIncomingCall({
           type:'incoming_call',
           peerInfo:data.peerInfo
         })
+        break;
+      }
+      case 'connect_call_failed':{
+        console.log("call failed");
+        setCallStatus('failed');
+        break;
+      }
+      case 'ringing':{
+        setCallStatus('ringing');
+        break;
+      }
+      case 'call_declined':{
+        console.log('call declined');
+        setCallStatus('rejected');
         break;
       }
       default:{
@@ -34,7 +49,7 @@ const messageHandler = (data,dispatchChatHistory,dispatchIncomingCall)=>{
     console.error(err);
   }
 }
-const connectChat = (username,dispatchChatHistory,dispatchIncomingCall)=>{
+const connectChat = (username,dispatchChatHistory,dispatchIncomingCall,setCallStatus)=>{
   const ws = new WebSocket(import.meta.env.VITE_WEBSOCKET_URL_CHAT)
 
   const heartbeat = ()=>{
@@ -58,7 +73,7 @@ ws.onmessage = (e)=>{
   try{
     // console.log('on message',e.data)
     const json = JSON.parse(e.data);
-    messageHandler(json,dispatchChatHistory,dispatchIncomingCall);
+    messageHandler(json,dispatchChatHistory,dispatchIncomingCall,setCallStatus);
   }catch(err){
     console.log(err);
   }

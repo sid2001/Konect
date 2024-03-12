@@ -3,10 +3,11 @@ import Theme from "../UI/Theme";
 import cross from "/src/assets/cross.png"
 import connectSignallingServer from "../../services/SignallingServer";
 
-const CallContainer = ({callInfo,setCallInfo,username})=>{
+const CallContainer = ({callInfo,setCallInfo,username,callStatus,setCallStatus})=>{
   const [clickCount,setClickCount] = useState(0);
   const [mode,setMode] = useState(import.meta.env.VITE_MODE);
   const vidRef = useRef(null);
+  var localStream;
   // console.log('renderrrrrrrring');
   console.log('video ref',vidRef)
   // const [windowSize,setWindowSize] = useState({
@@ -33,27 +34,51 @@ const CallContainer = ({callInfo,setCallInfo,username})=>{
   // const vidClickHandler = ()=>{
   //   setClickCount((c)=>c+1);
   // }
-
-  useEffect(()=>{
-    const handleSuccess = (stream) =>{
-      const localVideo = document.getElementById('localVideo');
-      if(localVideo){
-        localVideo.srcObject = stream;
-        console.log('local stream: ',stream.getVideoTracks()[0]);
-        connectSignallingServer({username:username,track:stream.getVideoTracks()[0]});
+  const handleSuccess = (stream) =>{
+    const localVideo = document.getElementById('localVideo');
+    if(localVideo){
+      localVideo.srcObject = stream;
+      localStream = stream;
+      console.log('local stream: ',stream.getVideoTracks());
+      // connectSignallingServer({username:username,track:stream.getVideoTracks()[0]});
       }
     }
     const handleError = (err)=>{
       console.error('Error accessing user media:',err);
     }
-
-    navigator.mediaDevices.getUserMedia({
-      video:true,
-      audio:true
-    })
-    .then(handleSuccess)
-    .catch(handleError)
-
+  useEffect(()=>{
+    switch(callStatus){
+      case 'ringing':{
+        console.log('ringing');
+        navigator.mediaDevices.getUserMedia({
+          video:true,
+          audio:true
+        })
+        .then(handleSuccess)
+        .catch(handleError)
+        break;
+      }
+      case 'rejected':{
+        console.log('call declined');
+        hangUpCall();
+        break;
+      }
+      case 'accepted':{
+        connectSignallingServer({username:username,track:localStream.getVideoTracks()[0]});
+        break;
+      }
+      case 'failed':{
+        setCallInfo(p => ({...p,onCall:false}));
+        break;
+      }
+      case 'calling' :{
+        console.log("calling");
+        break;
+      }
+      default:{
+        console.log('invalid call status');
+      }
+    }
     return ()=>{
       const localVideo = document.getElementById('localVideo');
       if(localVideo && localVideo.srcObject){
@@ -61,7 +86,7 @@ const CallContainer = ({callInfo,setCallInfo,username})=>{
         tracks.forEach(track=>track.stop());
       }
     }
-  },[]);
+  },[callStatus]);
 
   const getNodeFromRef = (nodes,ele) =>{
     var indx;

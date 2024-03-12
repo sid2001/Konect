@@ -29,12 +29,14 @@ const Chat = ({user})=>{
   const [search,setSearch] = useState(false);
   const [contacts,setContacts] = useState('');
   const [ws,setWs] = useState(null);
+  const [callStatus,setCallStatus] = useState(null);
   const selectedUser = selectedUserState.username;
   const navigate = useNavigate();
   console.log('user from chat: ',user);
   const [callInfo,setCallInfo] = useState(
     {
       onCall:false,
+      status:'',
       to:'',
     }
   )
@@ -47,7 +49,7 @@ const Chat = ({user})=>{
           w.close();
         }
         console.log('openeing ws');
-        return connectChat(user.username,dispatchChatHistory,dispatchIncomingCall);
+        return connectChat(user.username,dispatchChatHistory,dispatchIncomingCall,setCallStatus);
       });
       return ()=>{
         const wss = ws;
@@ -82,7 +84,7 @@ const Chat = ({user})=>{
       <dispatchIncomingCallContext.Provider value={dispatchIncomingCall}>
         <chatHistoryContext.Provider value={chatHistory}>
           <chatHistoryDispatchContext.Provider value={dispatchChatHistory}>
-            {incomingCall.ringing?<IncomingCall callerInfo={incomingCall.peerInfo}/>:''}
+            {incomingCall.ringing?<IncomingCall ws={ws} />:''}
             <ContainerWrapper>
               <ContactsContainer>
                 <Header hType={'userHeader'} _name={user.name?.first}/>
@@ -93,7 +95,7 @@ const Chat = ({user})=>{
                 {
                   selectedUserState.selectedUser?
                   <>
-                    <Header setCallInfo={setCallInfo} hType={'friendHeader'} _name={selectedUserState.selectedUser} ws={ws} selectedUserState = {selectedUserState}/>
+                    <Header setCallStatus={setCallStatus} setCallInfo={setCallInfo} hType={'friendHeader'} _name={user.username} ws={ws} selectedUserState = {selectedUserState}/>
                     <ChatBox selectedUserState={selectedUserState}/>
                     <InputBox ws={ws} user={user} dispatchSelectedUser={dispatchSelectedUser} selectedUserState={selectedUserState} value={selectedUserState.messages[selectedUser]}/>
                   </>
@@ -104,7 +106,7 @@ const Chat = ({user})=>{
                 }
               </HeaderWrapper>
               {callInfo.onCall?
-              <CallContainer username = {user.username} callInfo={callInfo} setCallInfo={setCallInfo}/>
+              <CallContainer callStatus={callStatus} setCallStatus={setCallStatus} username = {user.username} callInfo={callInfo} setCallInfo={setCallInfo}/>
               :''}
             </ContainerWrapper>
           </chatHistoryDispatchContext.Provider>

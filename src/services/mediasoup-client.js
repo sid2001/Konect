@@ -19,9 +19,9 @@ let params = {
     },
   ],
   // https://mediasoup.org/documentation/v3/mediasoup-client/api/#ProducerCodecOptions
-  codecOptions: {
-    videoGoogleStartBitrate: 1000
-  }
+  // codecOptions: {
+    // videoGoogleStartBitrate: 1000
+  // }
 }
 class MediaSoupClient {
   constructor(type,ss,roomId,username,localVideoSource){

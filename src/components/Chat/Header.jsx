@@ -1,6 +1,6 @@
 import callIcon from '/src/assets/call.svg';
 
-const Header = ({hType,_name,setCallInfo,ws,selectedUserState})=>{
+const Header = ({hType,_name,setCallInfo,ws,selectedUserState,setCallStatus})=>{
   const classname = hType==='userHeader'?hType:'friendHeader';
   const  nameclass = hType==='userHeader'?'user-name':'friend-name';
   const picture = hType==='userHeader'?'/src/assets/profile.svg':'/src/assets/friend.svg'
@@ -20,6 +20,7 @@ const Header = ({hType,_name,setCallInfo,ws,selectedUserState})=>{
     }catch(err){
       console.error('error making call');
     }
+    setCallStatus('calling');
     setCallInfo((s)=>{
       return({
         ...s,
