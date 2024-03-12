@@ -1,4 +1,4 @@
-import mediasoupClient from 'mediasoup-client';
+import {Device} from 'mediasoup-client';
 let params = {
   // mediasoup params
   encodings: [
@@ -24,34 +24,48 @@ let params = {
   }
 }
 class MediaSoupClient {
-  constructor(type,ss){
+  constructor(type,ss,roomId,username,localVideoSource){
     this.type = type;
     this.ss = ss;
     this.producerId = null;
+    this.roomId = roomId;
+    this.username = username;
+    this.params = {track:localVideoSource,...params};
+    // console.log('msc params: ',this.params);
   }
   createDevice = async ()=>{
-    this.device = new mediasoupClient.Device()
-
+    this.device = new Device();
+    console.log('device created');
+    // const payload = {
+    //     type:'getRtpCapabilities',
+    //     data:{
+    //       roomId:this.roomId
+    //     }
+    //   }
+    // await this.ss.send(JSON.stringify(payload));
+  }
+  loadRtpCapabilities = async ()=>{
     await this.device.load({
       routerRtpCapabilities:this.rtpCapabilities
     })
-
-    console.log('device rtpCapabilities: ', this.device.rtpCapabilities)
+    console.log('loaded device rtpCapabilities: ', this.device.rtpCapabilities);
   }
   getRtpCapabilites = async () =>{
     const payload = {
       type:'getRtpCapabilities',
       data :{
-        type:this.type
+        type:this.type,
+        roomId:this.roomId
       }
     }
-    this.ss.send(JSON.stringify(payload))
+    await this.ss.send(JSON.stringify(payload));
   }
   createSendTransport = async ()=>{
     const payload = {
       type:'createWebRtcTransport',
       data:{
-        type:this.type
+        type:this.type,
+        roomId:this.roomId
       }
     }
     this.ss.send(JSON.stringify(payload))
@@ -59,13 +73,15 @@ class MediaSoupClient {
   
   createProducerTransport = async () => {
     this.producerTransport = this.device.createSendTransport(this.sendTransportParams);
-
+    console.log('created webrtc transport.');
     this.producerTransport.on('connect',async ({dtlsParameters},callback,errback)=>{
       const payload = {
         type:'transportConnect',
         data:{
           type:this.type,
-          dtlsParameters:dtlsParameters
+          dtlsParameters:dtlsParameters,
+          roomId:this.roomId,
+          username:this.username
         }
       }
       try{
@@ -85,7 +101,8 @@ class MediaSoupClient {
           type:this.type,
           kind:parameters.kind,
           rtpParameters:parameters.rtpParameters,
-          appData: parameters.appData
+          appData: parameters.appData,
+          roomId:this.roomId
         }
       }
       try{
@@ -95,17 +112,20 @@ class MediaSoupClient {
         if(this.producerId!==null){
           let id = this.producerId;
           callback({id})
+          console.log('producer id received: ',this.producerId);
           clearInterval(interval)
+          // this.connectSendTransport();
         }
       },1000)
     }catch(err){
       errcheck(err)
     }
     })
+    this.connectSendTransport();
   }
   
   connectSendTransport = async () =>{
-    this.producer = await this.producerTransport.produce(params);
+    this.producer = await this.producerTransport.produce(this.params);
 
     this.producer.on('trackended',()=>{
       console.log('track ended');

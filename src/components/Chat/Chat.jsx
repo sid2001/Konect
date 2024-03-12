@@ -104,7 +104,7 @@ const Chat = ({user})=>{
                 }
               </HeaderWrapper>
               {callInfo.onCall?
-              <CallContainer callInfo={callInfo} setCallInfo={setCallInfo}/>
+              <CallContainer username = {user.username} callInfo={callInfo} setCallInfo={setCallInfo}/>
               :''}
             </ContainerWrapper>
           </chatHistoryDispatchContext.Provider>

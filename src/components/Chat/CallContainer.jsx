@@ -1,12 +1,13 @@
 import {useRef,useState, useEffect } from "react";
 import Theme from "../UI/Theme";
 import cross from "/src/assets/cross.png"
+import connectSignallingServer from "../../services/SignallingServer";
 
-const CallContainer = ({callInfo,setCallInfo})=>{
+const CallContainer = ({callInfo,setCallInfo,username})=>{
   const [clickCount,setClickCount] = useState(0);
   const [mode,setMode] = useState(import.meta.env.VITE_MODE);
   const vidRef = useRef(null);
-  
+  // console.log('renderrrrrrrring');
   console.log('video ref',vidRef)
   // const [windowSize,setWindowSize] = useState({
   //   width:500,
@@ -38,6 +39,8 @@ const CallContainer = ({callInfo,setCallInfo})=>{
       const localVideo = document.getElementById('localVideo');
       if(localVideo){
         localVideo.srcObject = stream;
+        console.log('local stream: ',stream.getVideoTracks()[0]);
+        connectSignallingServer({username:username,track:stream.getVideoTracks()[0]});
       }
     }
     const handleError = (err)=>{
@@ -68,8 +71,8 @@ const CallContainer = ({callInfo,setCallInfo})=>{
     return indx
   }
   const hoverHandler = (e) =>{
-    console.log(e);
-    console.log(vidRef.current.childNodes)
+    // console.log(e);
+    // console.log(vidRef.current.childNodes)
     const i = getNodeFromRef(vidRef.current.childNodes,'video-controls');
     // vidRef.current.childNodes[i].style.transition = '4s';
     switch(e.type) {

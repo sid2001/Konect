@@ -11,7 +11,7 @@ const wss = require('./wsServer');
 const authRoute = require('./routes/auth');
 const cors = require('cors');
 const User = require('./models/Users');
-const sfu = require('./middlewares/MediaSoup.js')
+const ss = require('./middlewares/MediaSoup.js')
 const userRoute = require('./routes/user');
 const testRoute = require('./routes/test');
 const {OAuth2Client} = require('google-auth-library');
@@ -125,13 +125,14 @@ mongoose.connect(process.env.DBURI,{dbName:'technic'})
         sessionHandler(request,{},()=>{
           console.log(request.session);
           if(pathname==='/sfu'){
-          sfu(request,socket,head,httpsServer)
+              ss.handleUpgrade(request, socket, head, function done(ws) {
+              ss.emit('connection', ws, request);
+            })
             }
           else if(pathname==='/chat'){
               wss.handleUpgrade(request, socket, head, function done(ws) {
               wss.emit('connection', ws, request);
             })
-            // wss(request,socket,head,httpsServer,sessionHandler)
           }
           else{
             console.log('invalid ws path')

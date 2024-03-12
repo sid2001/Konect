@@ -1,6 +1,6 @@
 // import WebSocket from 'ws';
 const messageHandler = (data,dispatchChatHistory,dispatchIncomingCall)=>{
-  console.log('incoming message: ',data);
+  // console.log('incoming message: ',data);
   try{
     switch(data.type){
       case 'msg':{
@@ -12,7 +12,7 @@ const messageHandler = (data,dispatchChatHistory,dispatchIncomingCall)=>{
         break;
       }
       case 'ping':{
-        console.log('pinging!!');
+        // console.log('pinging!!');
         break;
       }
       case 'ack':{
@@ -35,7 +35,7 @@ const messageHandler = (data,dispatchChatHistory,dispatchIncomingCall)=>{
   }
 }
 const connectChat = (username,dispatchChatHistory,dispatchIncomingCall)=>{
-  const ws = new WebSocket("wss://127.0.0.1:8081/chat")
+  const ws = new WebSocket(import.meta.env.VITE_WEBSOCKET_URL_CHAT)
 
   const heartbeat = ()=>{
   clearTimeout(this.pingTimeout);

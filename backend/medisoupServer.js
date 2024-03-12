@@ -23,7 +23,8 @@ const mediaCodecs =
 const tranportOptions = {
   listenIps:[
     {
-      ip: '127.0.0.1'
+      ip: '127.0.0.1',
+      announcedIp:'127.0.0.1'
     }
   ],
   enableUDP: true,
@@ -39,33 +40,44 @@ class SFUServer {
       dtlsCertificateFile:'./cert.pem',
       dtlsPrivateKeyFile:'./key.pem',
     }
+    
   )
-  console.log('worker created',this.worker);
+  // console.log('worker created',this.worker);
+  console.log('worker created');
+  console.log('workder pid: ', this.worker.pid)
+  this.worker.on('died', error => {
+    console.error('mediasoup worker has died')
+    setTimeout(() => process.exit(1), 2000) // exit in 2 seconds
+  })
   }
   createRouter  = async ()=>{
-    this.router = await this.worker.createRouter({mediaCodecs})
+    this.router = await this.worker.createRouter({mediaCodecs});
+    console.log('router created');
   }
 
   getRouterRtpCapabilities = async ()=>{
     this.rtpCapabilities =  this.router.rtpCapabilities; 
-    console.log('rtp capabilities: ', this.rtpCapabilities)
+    // console.log('rtp capabilities set: ', this.rtpCapabilities)
+    console.log('rtp capabilities set.');
   }
 
   createTransport = async (type)=>{
     switch(type){
       case "producer":
-        [this.producerTransport,this.producerParams] = await getTransport();
+        console.log("creating producer transport");
+        [this.producerTransport,this.producerParams] = await this.getTransport();
         break;
       case "consumer":
-        [this.consumerTransport,this.consumerParams] = await getTransport();
+        console.log('creating consumer transport');
+        [this.consumerTransport,this.consumerParams] = await this.getTransport();
         break;
     }
   }
 
   getTransport = async ()=>{
 
-    let transport = this.router.createWebRtcTransport(tranportOptions);
-    console.log('transport: ',transport.id);
+    let transport = await this.router.createWebRtcTransport(tranportOptions);
+    console.log('transport id: ',transport.id);
 
     transport.on('dtlsstatechange',dtlsState =>{
       if (dtlsState==='closed') {
@@ -76,14 +88,33 @@ class SFUServer {
       console.log('transport closed')
     })
     let transportParams = {
-      params: {
         id: transport.id,
         iceParameters: transport.iceParameters,
         iceCandidates: transport.iceCandidates,
         dtlsParameters: transport.dtlsParameters
-      }
     }
     return [transport,transportParams];
+  }
+  producerTransportConnect = async ({dtlsParameters})=>{
+    // console.log("DTLS params...",{dtlsParameters});
+    // console.log("DTLS params...");
+    await this.producerTransport.connect({dtlsParameters});
+    console.log('producer transport connected');
+  }
+  producerTransportProduce = async ({kind,rtpParameters,appData})=>{
+    // console.log(this.producerTransport)
+    this.producer = await this.producerTransport.produce({
+      kind,
+      rtpParameters,
+    })
+
+    console.log('Producer ID: ',this.producer.id,this.producer.kind);
+
+    this.producer.on('transportclose',()=>{
+      console.log('transport for this producer closed', this.producer.id);
+      this.producer.close();
+    })
+    return this.producer.id;
   }
 }
 

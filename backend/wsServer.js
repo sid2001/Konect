@@ -1,9 +1,8 @@
 /* eslint-disable no-undef */
 const ws = require('ws');
 const clientAuth = require('./utilities/scripts/sessionAuth');
-var sessionHandle;
 const heartbeat = (ws) => {
-  console.log('heartbeat');
+  // console.log('heartbeat');
   // console.log(this);
   ws.isAlive = true;
 }
@@ -28,7 +27,11 @@ const messageHandler = (data,ws)=>{
           type:'incoming_call',
           peerInfo : {...data.peerInfo},
         }
+        try{
         clients.get(data.recipient).send(JSON.stringify(payload));
+        }catch(err){
+          console.error(err);
+        }
         break;
       }
       default :{
@@ -41,17 +44,13 @@ const messageHandler = (data,ws)=>{
 }
 
 const verifyClient = async (info,cb)=>{
-  // sessionHandle(info.req,{},async ()=>{
-    const isAuth = await clientAuth(info.req.session.userId);
-    // console.log('isAuth: ', isAuth)
-    if(isAuth) {
-      cb(true) 
-    }
-    else{
-      cb(false,401,'Unauthorized')
-    }
-  // });
-  
+  const isAuth = await clientAuth(info.req.session.userId);
+  if(isAuth) {
+    cb(true) 
+  }
+  else{
+    cb(false,401,'Unauthorized')
+  }
 }
 
 
@@ -66,19 +65,12 @@ const verifyClient = async (info,cb)=>{
     clientTracking:true,
 
   });
-  // wss.handleUpgrade(request, socket, head, function done(ws) {
-  //     wss.emit('connection', ws, request);
-  // })
-
-//   httpsServer.on('upgrade', function upgrade(request, socket, head) {
-//     console.log(socket);
-//     wss.handleUpgrade(request, socket, head, function done(ws) {
-//       wss.emit('connection', ws, request);
-// })})
+const pingHandler = () =>{
   const interval = setInterval(()=>{
-    console.log(clients.size);
+    if(wss.clients.size>0)
+      // console.log(clients.size);
     wss.clients.forEach((sock)=>{
-      console.log('pinging');
+      // console.log('pinging');
       if(sock.isAlive === false){
         // sock.emit('close');//why not emitting
         // console.log(sock)
@@ -90,9 +82,11 @@ const verifyClient = async (info,cb)=>{
       
     });
   },3000)
+  return interval;
+}
   
   wss.on('close',()=>{
-    clearInterval(interval);
+    clearInterval(wss.pinger);
     console.log('WebSocket server closed.');
   })
   // wss.on('listening',(s)=>{
@@ -107,6 +101,7 @@ const verifyClient = async (info,cb)=>{
   wss.on('connection',(ws,request)=>{
 
     console.log('ws connection received!!')
+    wss.pinger = pingHandler();
     ws.isAlive = true;
     ws.on('error',console.error);
     ws.on('close',()=>{
