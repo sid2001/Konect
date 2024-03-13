@@ -19,6 +19,13 @@ export const incomingCallReducer = (state,action)=>{
       }
       return s;
     }
+    case 'accepted_call':{
+      const s = {
+        ringing:false,
+        peerInfo:{}
+      }
+      return s;
+    }
     // case 'failed_call':{
     //   const s = {
 

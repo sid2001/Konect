@@ -24,13 +24,14 @@ let params = {
   // }
 }
 class MediaSoupClient {
-  constructor(type,ss,roomId,username,localVideoSource){
+  constructor(type,ss,roomId,username,localVideoSource,remoteVideo){
     this.type = type;
     this.ss = ss;
     this.producerId = null;
     this.roomId = roomId;
     this.username = username;
     this.params = {track:localVideoSource,...params};
+    this.remoteVideo = remoteVideo;
     // console.log('constructor: ',username);
   }
   createDevice = async ()=>{
@@ -140,6 +141,7 @@ class MediaSoupClient {
     console.log('transport ended');
     //close video track
   })
+  this.createRecvTransport();
   }
   
   createRecvTransport = async ()=>{
@@ -160,7 +162,9 @@ class MediaSoupClient {
       const payload = {
         type:'transportRecvConnect',
         data:{
-          dtlsParameters:dtlsParameters
+          dtlsParameters:dtlsParameters,
+          username:this.username,
+          roomId:this.roomId
         }
       }
       try{
@@ -170,26 +174,41 @@ class MediaSoupClient {
         errback(err)
       }
     })
+    this.connectRecvTransport();
   }
 
   connectRecvTransport = async ()=>{
     const payload = {
       type:'consume',
       data:{
-        rtpCapabilities:this.device.rtpCapabilities
+        rtpCapabilities:this.device.rtpCapabilities,
+        username:this.username,
+        roomId:this.roomId
       }
     }
     this.ss.send(JSON.stringify(payload));
   }
 
-  createConsumer = async ()=>{
-    const param = this.consumerParams;
+  createConsumer = async (param)=>{
+    // const param = this.consumerParams;
     this.consumer = await this.consumerTransport.consume({
       id:param.id,
       producerId:param.producerId,
       kind:param.kind,
       rtpParameters:param.rtpParameters
     })
+    const {track} = this.consumer;
+    console.log('track',track);
+    this.remoteVideo.srcObject = new MediaStream([track]);
+
+    const payload = {
+      type:'consumerResume',
+      data:{
+        roomId:this.roomId,
+        username:this.username
+      }
+    }
+    this.ss.send(JSON.stringify(payload));
   }
 }
 

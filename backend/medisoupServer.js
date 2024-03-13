@@ -23,8 +23,8 @@ const mediaCodecs =
 const tranportOptions = {
   listenIps:[
     {
-      ip: '127.0.0.1',
-      announcedIp:'127.0.0.1'
+      ip: '0.0.0.0',
+      announcedIp:'192.168.9.108'
     }
   ],
   enableUDP: true,
@@ -41,8 +41,8 @@ class SFUServer {
   async createWorker() {
     this.worker = await mediasoup.createWorker(
     {
-      dtlsCertificateFile:'./cert.pem',
-      dtlsPrivateKeyFile:'./key.pem',
+      // dtlsCertificateFile:'./cert.pem',
+      // dtlsPrivateKeyFile:'./key.pem',
     }
     
   )
@@ -76,6 +76,7 @@ class SFUServer {
           producerTransport:producerTransport,
           producerParams:producerParams
         })
+
         return producerParams;
       case "consumer":
         console.log('creating consumer transport for: ',username);
@@ -132,7 +133,60 @@ class SFUServer {
       console.log('transport for this producer closed', this.producer.id);
       producer.close();
     })
+    // console.log(this.producerMap,this.consumerMap);
     return this.producerMap.get(username).producer.id;
+  }
+  transportRecvConnect = async ({dtlsParameters,username})=>{
+    console.log("consumer DTLS Params received for ",username)
+    await this.consumerMap.get(username).consumerTransport.connect({dtlsParameters});
+  }
+  consumerTransportConsume = async ({rtpCapabilities,username})=>{
+    var producerId;
+    for(let [key,value] of this.producerMap){
+      if(key!==username){
+        producerId = value.producer.id;
+      }
+    }
+    try{
+      if(this.router.canConsume({
+        producerId:producerId,rtpCapabilities
+      })){
+        var consumer = await this.consumerMap.get(username).consumerTransport.consume({
+          producerId:producerId,
+          rtpCapabilities,
+          paused:true
+        })
+        this.consumerMap.set(username,{
+          ...this.consumerMap.get(username),
+          consumer:consumer
+        })
+
+        consumer.on('transportclose', () => {
+          console.log('transport close from consumer')
+        })
+
+        consumer.on('producerclose', () => {
+          console.log('producer of consumer closed')
+        })
+
+        const params = {
+          id: consumer.id,
+          producerId: producerId,
+          kind: consumer.kind,
+          rtpParameters: consumer.rtpParameters,
+        }
+        return params;
+
+      }
+    }catch (err){
+      console.log(err.message);
+      return {error:err}
+    }
+  }
+  consumerResume = async (username)=>{
+    console.log('consumer resume');
+    console.log(this.consumerMap,this.producerMap)
+    await this.consumerMap.get(username).consumer.resume();
   }
 }
 

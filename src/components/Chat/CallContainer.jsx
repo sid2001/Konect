@@ -7,7 +7,8 @@ const CallContainer = ({callInfo,setCallInfo,username,callStatus,setCallStatus})
   const [clickCount,setClickCount] = useState(0);
   const [mode,setMode] = useState(import.meta.env.VITE_MODE);
   const vidRef = useRef(null);
-  var localStream;
+  // var localStream;
+  // var remoteVideo;
   // console.log('renderrrrrrrring');
   console.log('video ref',vidRef)
   // const [windowSize,setWindowSize] = useState({
@@ -36,26 +37,36 @@ const CallContainer = ({callInfo,setCallInfo,username,callStatus,setCallStatus})
   // }
   const handleSuccess = (stream) =>{
     const localVideo = document.getElementById('localVideo');
+    const remoteVideo = document.getElementById('remoteVideo');
+    // console.log('remote video',remoteVideo)
     if(localVideo){
+      console.log('setting local video');
       localVideo.srcObject = stream;
-      localStream = stream;
+      // localStream = stream;
+      console.log(stream);
       console.log('local stream: ',stream.getVideoTracks());
-      // connectSignallingServer({username:username,track:stream.getVideoTracks()[0]});
+      if(callStatus==='answered')
+        connectSignallingServer({username:username,track:stream.getVideoTracks()[0],receiver:callInfo.to,isCaller:false,remoteVideo:remoteVideo});
+      else
+        connectSignallingServer({username:username,track:stream.getVideoTracks()[0],receiver:callInfo.to,isCaller:true,remoteVideo:remoteVideo});
       }
     }
     const handleError = (err)=>{
       console.error('Error accessing user media:',err);
     }
-  useEffect(()=>{
-    switch(callStatus){
-      case 'ringing':{
-        console.log('ringing');
+    const getMedia = async ()=>{
         navigator.mediaDevices.getUserMedia({
           video:true,
           audio:true
         })
         .then(handleSuccess)
         .catch(handleError)
+    }
+  useEffect(()=>{
+    switch(callStatus){
+      case 'ringing':{
+        console.log('ringing');
+        // getMedia();
         break;
       }
       case 'rejected':{
@@ -64,7 +75,8 @@ const CallContainer = ({callInfo,setCallInfo,username,callStatus,setCallStatus})
         break;
       }
       case 'accepted':{
-        connectSignallingServer({username:username,track:localStream.getVideoTracks()[0]});
+        getMedia();
+        // connectSignallingServer({username:username,track:localStream.getVideoTracks()[0],receiver:callInfo.to,isCaller:true});
         break;
       }
       case 'failed':{
@@ -73,6 +85,10 @@ const CallContainer = ({callInfo,setCallInfo,username,callStatus,setCallStatus})
       }
       case 'calling' :{
         console.log("calling");
+        break;
+      }
+      case 'answered':{
+        getMedia(true);
         break;
       }
       default:{
@@ -128,7 +144,7 @@ const CallContainer = ({callInfo,setCallInfo,username,callStatus,setCallStatus})
     localSource.srcObject = null;
     setCallInfo(p=>{
       return (
-        {...p,onCall:false}
+        {...p,to:'',onCall:false}
       )
     }
     )
@@ -144,7 +160,7 @@ const CallContainer = ({callInfo,setCallInfo,username,callStatus,setCallStatus})
           <video id='localVideo' autoPlay muted playsInline></video>
         </div>
         <div className="video-box remote-video">
-          <video id='remoteVideo' autoPlay playsInline></video>
+          <video id='remoteVideo' autoPlay muted playsInline></video>
         </div>
         <div className="video-controls">
           <div id="hang-up" onClick={hangUpCall}>

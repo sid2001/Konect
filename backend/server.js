@@ -92,7 +92,7 @@ app.use((req,res,next)=>{
   }
 })
 
-// app.use('/sfu/',sfu(httpsServer))//sfu route implement
+
 app.use('/test',testRoute);
 app.use(authRoute);
 app.use('/user/',userRoute);
@@ -144,9 +144,6 @@ mongoose.connect(process.env.DBURI,{dbName:'technic'})
         // wss.handleUpgrade(request, socket, head, function done(ws) {
         // wss.emit('connection', ws, request);
         })
-
-        // wss(httpsServer,sessionHandler,()=>{console.log('wss attached!!')});
-        // sfu(httpsServer);
     }
     );
 }).catch(err=>{

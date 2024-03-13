@@ -47,18 +47,43 @@ async function signallingMessageHandler(data) {
       this.send(JSON.stringify(payload));
       break;
     }
+    case 'register_receiver':{
+      clients.set(json.data.username,this);
+      break;
+    }
+    case 'room_created_notify_receiver':{
+      const payload = {
+        type:'room_created',
+        data:{
+          roomId:json.data.roomId
+        }
+      }
+      clients.get(json.data.receiver).send(JSON.stringify(payload));
+      break;
+    }
     case 'createWebRtcTransport':{
       // console.log('createWebRtcTransport: ',json.data);
+      if(json.data.type==='producer'){
       const producerParams = await room.createTransport(json.data.type,json.data.username);
       const payload = {
-        type:'producerParams',
+        type:'producerParams',//send params
         data:{
           params:producerParams
         }
       }
-      this.send(JSON.stringify(payload));
+      this.send(JSON.stringify(payload));}
+      else if(json.data.type==='consumer'){
+        const consumerParams = await room.createTransport(json.data.type,json.data.username);
+      const payload = {
+        type:'consumerParams',//recv params
+        data:{
+          params:consumerParams
+        }
+      }
+      this.send(JSON.stringify(payload));}
+      }
       break;
-    }
+    
     case 'transportConnect':{
       await room.producerTransportConnect(json.data);
       break;
@@ -79,6 +104,25 @@ async function signallingMessageHandler(data) {
         [username]:producerId
       })
       this.send(JSON.stringify(payload));
+      break;
+    }
+    case 'transportRecvConnect':{
+      await room.transportRecvConnect(json.data)
+      break;
+    }
+    case 'consume':{
+      const params = await room.consumerTransportConsume(json.data);
+      const payload = {
+        type:'consumerTransportConsume',
+        data:{
+          params
+        }
+      }
+      this.send(JSON.stringify(payload));
+      break;
+    }
+    case 'consumerResume':{
+      await room.consumerResume(json.data.username);
       break;
     }
     default :{
@@ -111,11 +155,11 @@ eventEmitter.on('createSFU',async (ws,data,roomId)=>{
       roomId: roomId
     }
   }
-  clients.set(roomId,ws);
+  clients.set(data.username,ws);
   await server.createWorker();
   await server.createRouter();
   await server.getRouterRtpCapabilities();
-  server.username = data.username;
+  // server.username = data.username;
   // console.log(ws);
   ws.send(JSON.stringify(payload));
 })

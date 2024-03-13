@@ -1,11 +1,18 @@
 import { useContext } from 'react';
 import { dispatchIncomingCallContext, incomingCallContext } from '../Context/ChatContext';
 import '/src/styles/notification.css'
-const IncomingCall = ({ws})=>{
+const IncomingCall = ({ws,setCallInfo,setCallStatus})=>{
   const dispatchIncomingCall = useContext(dispatchIncomingCallContext);
   const incomingCall = useContext(incomingCallContext);
   const answerCall = ()=>{
-
+    const payload = {
+      type:'call_accepted',
+      peerInfo:incomingCall.peerInfo.username
+    }
+    ws.send(JSON.stringify(payload));
+    setCallStatus('answered');
+    dispatchIncomingCall({type:'accepted_call'});
+    setCallInfo((s)=>({...s,onCall:true,to:incomingCall.peerInfo.username}))
   }
   const rejectCall = ()=>{
     const payload = {

@@ -50,6 +50,13 @@ const messageHandler = (data,ws)=>{
         clients.get(data.peerInfo).send(JSON.stringify(payload));
         break;
       }
+      case 'call_accepted':{
+        const payload = {
+          type:'call_accepted'
+        }
+        clients.get(data.peerInfo).send(JSON.stringify(payload));
+        break;
+      }
       default :{
         throw Error('Invalid message type: ' + data.type)
       }

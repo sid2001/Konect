@@ -41,6 +41,11 @@ const messageHandler = (data,dispatchChatHistory,dispatchIncomingCall,setCallSta
         setCallStatus('rejected');
         break;
       }
+      case 'call_accepted':{
+        console.log('call accepted');
+        setCallStatus('accepted');
+        break;
+      }
       default:{
         throw Error('Invalid message type: ',data.type);
       }

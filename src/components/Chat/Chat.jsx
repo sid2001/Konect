@@ -84,7 +84,7 @@ const Chat = ({user})=>{
       <dispatchIncomingCallContext.Provider value={dispatchIncomingCall}>
         <chatHistoryContext.Provider value={chatHistory}>
           <chatHistoryDispatchContext.Provider value={dispatchChatHistory}>
-            {incomingCall.ringing?<IncomingCall ws={ws} />:''}
+            {incomingCall.ringing?<IncomingCall setCallInfo={setCallInfo} setCallStatus={setCallStatus} ws={ws} />:''}
             <ContainerWrapper>
               <ContactsContainer>
                 <Header hType={'userHeader'} _name={user.name?.first}/>
