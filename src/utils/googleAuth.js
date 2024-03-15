@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+axios.defaults.baseURL = import.meta.env.VITE_AXIOS_DEFAULT_BASE_URL;
 export const getUserInfo = (user)=>{
   const config = {
     url:`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`,
@@ -15,7 +16,7 @@ export const getUserInfo = (user)=>{
 
 export const authToken = (authCode)=>{
   const config = {
-    url:'https://127.0.0.1:8081/auth/token',
+    url:'/auth/token',
     method:'post',
     data:{
       authCode:authCode

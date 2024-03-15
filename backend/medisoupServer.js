@@ -1,4 +1,5 @@
 /* eslint-disable no-undef */
+require('dotenv').config();
 const mediasoup = require('mediasoup');
 const mediaCodecs =
 [
@@ -24,7 +25,7 @@ const tranportOptions = {
   listenIps:[
     {
       ip: '0.0.0.0',
-      announcedIp:'192.168.9.108'
+      announcedIp:process.env.ANNOUNCED_IP
     }
   ],
   enableUDP: true,

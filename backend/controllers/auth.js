@@ -54,6 +54,8 @@ exports.getUser = (req,res,next)=>{
     username:req.username,
     name:req.name,
   }
+  console.log('auth type:',req.get('X-Auth-Type'))
+  console.log('jwt token',req.get("Authorization"));
   res.status(200).json(JSON.stringify(userPayload));
   console.log('user info sent');
 }

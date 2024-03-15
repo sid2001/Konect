@@ -79,9 +79,108 @@ const userSchema = new Schema({
   
 })
 
-userSchema.methods.getContacts = function(){
-  return this.contacts;
-}
+// const userSchema = new Schema({
+//   userData:{
+//     username:{
+//       type:String,
+//       required:true,
+//       unique:true // //this only creates an index and not a validator acc to the docs
+//     },
+//     name:{
+//       firstName:{
+//         type:String,
+//         required:true
+//       },
+//       lastName:{
+//         type:String,
+//       }
+//     },
+//     profilePicture:{
+//       type:String
+//     },
+//     email:{
+//       type:String,
+//       required:true
+//     },
+//     age:{
+//       type:Number
+//     },
+//     gender:{
+//       type:String,
+//     },
+//     origin:{
+//       type:String
+//     },
+//     description:{
+//       type:String,
+//     }
+//   },
+//   passwordHash:{
+//     type:String,
+//     required:true
+//   },
+//   contacts:[
+//     {
+//       userId:mongoose.ObjectId,
+//       username:String
+//     }
+//   ],
+//   metaData:{
+//     createdTime:{
+//       type:Date,
+//       default:Date.now(),
+//       required:true
+//     }
+//   },
+//   communityPost:[
+//     {
+//       type:mongoose.ObjectId,
+//       ref:'Post'
+//     }
+//   ]
+//   ,
+//   comments:[
+//     {
+//       type:mongoose.ObjectId,
+//       ref:'Comment'
+//     }
+//   ],
+//   callLog:[
+//     {
+//       callerId:{
+//         type:mongoose.ObjectId
+//       },
+//       time:{
+//         type:Date,
+//         default:Date.now(),
+//       }
+//     }
+//   ],
+//   chats:{
+//       type:Map,
+//       of: {
+//         type:mongoose.ObjectId,
+//         ref:'Chat'
+//       }
+//     }
+// })
+
+// userSchema.methods.getContacts = function(){
+//   return this.contacts.map(c=>{
+//     return c.username
+//   })
+// }
+
+// userSchema.methods.getContactId = function(username){
+//   return this.contacts.find(function(c){
+//     return (c.username===username);
+//   });
+// }
+
+// userSchema.methods.getUserData = function(){
+//   return this.userData;
+// }
+
 userSchema.statics.getAllUsers = async function(){
   try{
   const users = await this.find({});

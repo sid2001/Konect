@@ -137,11 +137,16 @@ const CallContainer = ({callInfo,setCallInfo,username,callStatus,setCallStatus})
     )
   }
   const hangUpCall = ()=>{
+    try{
     const indx = getNodeFromRef(vidRef.current.childNodes,'video-box local-video');
     const localSource = vidRef.current.childNodes[indx].childNodes[0];
     const tracks = localSource.srcObject.getTracks();
     tracks.forEach(track=>track.stop());
     localSource.srcObject = null;
+    
+    }catch(err){
+      console.error(err);
+    }
     setCallInfo(p=>{
       return (
         {...p,to:'',onCall:false}
@@ -160,7 +165,7 @@ const CallContainer = ({callInfo,setCallInfo,username,callStatus,setCallStatus})
           <video id='localVideo' autoPlay muted playsInline></video>
         </div>
         <div className="video-box remote-video">
-          <video id='remoteVideo' autoPlay muted playsInline></video>
+          <video id='remoteVideo' autoPlay playsInline></video>
         </div>
         <div className="video-controls">
           <div id="hang-up" onClick={hangUpCall}>

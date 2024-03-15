@@ -34,9 +34,9 @@ const googleAuthClient = new OAuth2Client(
     resave:false,
     saveUninitialized:false,//suggested since it says that user can request parallel
     cookie:{
-      secure:true,
-      httpOnly:true,
-      sameSite:'none',
+      // secure:true,
+      // httpOnly:true,
+      // sameSite:'none',
       expires:new Date(Date.now() + 1 * 3600000),
       maxAge:8*60*60*1000
     },
@@ -50,7 +50,7 @@ const googleAuthClient = new OAuth2Client(
   next();
 })
 app.use(cors({
-  origin:'https://127.0.0.1:5173',
+  origin:process.env.ALLOW_ORIGIN,
   credentials:true
 }));
 app.use(sessionHandler);
@@ -112,7 +112,8 @@ app.use((err,req,res,next)=>{
 mongoose.connect(process.env.DBURI,{dbName:'technic'})
 .then(()=>{
   console.log("DB CONNECTED");  
-  const httpsServer = https.createServer(credentials,app).listen(
+  // const httpsServer = https.createServer(credentials,app).listen(
+  const httpsServer = app.listen(
     {
       host:process.env.HOST,port:process.env.PORT},
       ()=>{

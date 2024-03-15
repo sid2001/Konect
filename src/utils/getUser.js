@@ -1,13 +1,15 @@
 import axios from "axios";
-
-axios.defaults.baseURL = 'https://127.0.0.1:8081/';
+// import https from 'https';
+// axios.defaults.baseURL = 'https://127.0.0.1:8081/';
+axios.defaults.baseURL = import.meta.env.VITE_AXIOS_DEFAULT_BASE_URL;
 
 const getUser = async ()=>{
 
   const config = {
     method:'get',
     url:'/getUser',
-    withCredentials:true
+    withCredentials:true,
+    headers:{"Content-Type":"application/json","Access-Control-Allow-Origin":"*","X-Auth-Type":"session","Authorization":"jwttoken"}
   }
   return axios(config)
   .then(res=>{
@@ -25,7 +27,7 @@ export const login = async (data)=>{
     url:'/login',
     data:body,
     withCredentials:true,
-    headers:{"Content-Type":"application/json"}
+    headers:{"Content-Type":"application/json","Access-Control-Allow-Origin":"*"}
   }
   return axios(config)
   .then(res=>{
