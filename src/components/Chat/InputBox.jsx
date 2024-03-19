@@ -42,7 +42,18 @@ const InputBox = ({dispatchSelectedUser,selectedUserState,user,ws})=>{
     <div key={selectedUserState.selectedUser} className='input-area'>
       <img className='smiley' src={smiley} alt="" />
       <img className='attach' src={attachButton} alt="" />
-      <textarea type="text" rows={1} style={{resize:'none'}} placeholder='message' onChange={messageHandler} value={message}/>
+      <textarea 
+      autoFocus
+      type="text" rows={1} 
+      style={{resize:'none'}} 
+      placeholder='message' 
+      onChange={messageHandler} 
+      value={message}
+      onKeyUp={(e)=>{if(e.key==="Enter"&&!e.shiftKey){
+        e.preventDefault();
+        sendMessageHandler();
+      }}}
+      />
       <button><img className='send' src={sendButton} alt="send" onClick={sendMessageHandler}/></button>
     </div>
   )

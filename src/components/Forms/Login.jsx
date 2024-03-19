@@ -13,7 +13,7 @@ const Login = ()=>{
   });
   
   const inputChangeHandler = (e)=>{
-    console.log(e);
+    // console.log(e);
     if(e.type==='change'){
       setFormData((f)=>({...f, [e.target.id]:e.target.value }));
     }
@@ -31,6 +31,7 @@ const Login = ()=>{
       }
     })
     .catch(err=>{
+      alert('wrong credentials');
       console.log('Logging failed: ',err);
     })
   }

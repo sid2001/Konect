@@ -3,10 +3,11 @@ import Theme from "../UI/Theme";
 import cross from "/src/assets/cross.png"
 import connectSignallingServer from "../../services/SignallingServer";
 
-const CallContainer = ({callInfo,setCallInfo,username,callStatus,setCallStatus})=>{
+const CallContainer = ({ws,callInfo,setCallInfo,username,callStatus,setCallStatus})=>{
   const [clickCount,setClickCount] = useState(0);
   const [mode,setMode] = useState(import.meta.env.VITE_MODE);
   const vidRef = useRef(null);
+  const [peer,setPeer] = useState('');
   // var localStream;
   // var remoteVideo;
   // console.log('renderrrrrrrring');
@@ -38,19 +39,25 @@ const CallContainer = ({callInfo,setCallInfo,username,callStatus,setCallStatus})
   const handleSuccess = (stream) =>{
     const localVideo = document.getElementById('localVideo');
     const remoteVideo = document.getElementById('remoteVideo');
-    // console.log('remote video',remoteVideo)
+    const remoteAudio = document.getElementById('remoteAudio');
+    console.log('local stream success handle');
     if(localVideo){
       console.log('setting local video');
       localVideo.srcObject = stream;
       // localStream = stream;
       console.log(stream);
       console.log('local stream: ',stream.getVideoTracks());
-      if(callStatus==='answered')
-        connectSignallingServer({username:username,track:stream.getVideoTracks()[0],receiver:callInfo.to,isCaller:false,remoteVideo:remoteVideo});
-      else
-        connectSignallingServer({username:username,track:stream.getVideoTracks()[0],receiver:callInfo.to,isCaller:true,remoteVideo:remoteVideo});
+      if(callStatus==='answered'){
+        connectSignallingServer({username:username,track:stream.getVideoTracks()[0],audioTrack:stream.getAudioTracks()[0],receiver:callInfo.to,isCaller:false,remoteVideo:remoteVideo,isAudio:false,remoteAudio:remoteAudio});
+        // connectSignallingServer({username:username,track:stream.getVideoTracks()[0],audioTrack:stream.getAudioTracks()[0],receiver:callInfo.to,isCaller:false,remoteVideo:remoteVideo,isAudio:true,remoteAudio:remoteAudio});
+      }
+      else{
+        connectSignallingServer({username:username,track:stream.getVideoTracks()[0],audioTrack:stream.getAudioTracks()[0], receiver:callInfo.to,isCaller:true,remoteVideo:remoteVideo,isAudio:false,remoteAudio:remoteAudio});
+        // connectSignallingServer({username:username,track:stream.getVideoTracks()[0],audioTrack:stream.getAudioTracks()[0], receiver:callInfo.to,isCaller:true,remoteVideo:remoteVideo,isAudio:true,remoteAudio:remoteAudio});
+      }
       }
     }
+    
     const handleError = (err)=>{
       console.error('Error accessing user media:',err);
     }
@@ -75,7 +82,7 @@ const CallContainer = ({callInfo,setCallInfo,username,callStatus,setCallStatus})
         break;
       }
       case 'accepted':{
-        getMedia();
+        getMedia(); 
         // connectSignallingServer({username:username,track:localStream.getVideoTracks()[0],receiver:callInfo.to,isCaller:true});
         break;
       }
@@ -89,6 +96,10 @@ const CallContainer = ({callInfo,setCallInfo,username,callStatus,setCallStatus})
       }
       case 'answered':{
         getMedia(true);
+        break;
+      }
+      case 'call_ended':{
+        hangUpCall();
         break;
       }
       default:{
@@ -153,6 +164,15 @@ const CallContainer = ({callInfo,setCallInfo,username,callStatus,setCallStatus})
       )
     }
     )
+    console.log("callInfo", callInfo);
+    const payload = {
+      type:'call_ended',
+      data:{
+        recipient:callInfo.to
+      }
+    }
+    if(callStatus!=='call_ended');
+      ws.send(JSON.stringify(payload));
   }
   return (
     
@@ -166,6 +186,7 @@ const CallContainer = ({callInfo,setCallInfo,username,callStatus,setCallStatus})
         </div>
         <div className="video-box remote-video">
           <video id='remoteVideo' autoPlay playsInline></video>
+          <audio autoPlay id="remoteAudio"></audio>
         </div>
         <div className="video-controls">
           <div id="hang-up" onClick={hangUpCall}>

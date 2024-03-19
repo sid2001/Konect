@@ -74,8 +74,8 @@ app.use((req,res,next)=>{
       req.user = user;
       req.userId = user._id;
       req.userType = 1;
-      req.username = user.username;
-      req.name = user.name;
+      req.username = user.userData.username;
+      req.name = user.userData.name;
       req.isLoggedIn = true;
       return next();
     })

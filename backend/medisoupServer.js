@@ -33,8 +33,9 @@ const tranportOptions = {
   preferUDP: true,
 }
 class SFUServer {
-  constructor(roomId){
-    this.roomId = roomId
+  constructor(roomId,isAudio){
+    this.roomId = roomId;
+    this.isAudio = isAudio;
     this.producerMap = new Map();
     this.consumerMap = new Map();
   }

@@ -29,6 +29,7 @@ const Chat = ({user})=>{
   const [search,setSearch] = useState(false);
   const [contacts,setContacts] = useState('');
   const [ws,setWs] = useState(null);
+  const [wsStatus,setWsStatus] = useState(-1);
   const [callStatus,setCallStatus] = useState(null);
   const selectedUser = selectedUserState.username;
   const navigate = useNavigate();
@@ -49,14 +50,32 @@ const Chat = ({user})=>{
           w.close();
         }
         console.log('openeing ws');
-        return connectChat(user.username,dispatchChatHistory,dispatchIncomingCall,setCallStatus);
+        return connectChat(user.username,dispatchChatHistory,dispatchIncomingCall,setCallStatus,setWsStatus);
       });
       return ()=>{
         const wss = ws;
         if(wss!==null)wss.close();
       }
     }
-  },[user])
+  },[user]);
+  
+  // useEffect(()=>{
+  //   if(wsStatus===0&&user.isLoggedIn===true){
+  //     setWs((w)=>{
+  //       if(w!==null){
+  //         console.log('closing ws');
+  //         // w.close();
+  //       }
+  //       console.log('openeing ws');
+  //       return connectChat(user.username,dispatchChatHistory,dispatchIncomingCall,setCallStatus,setWsStatus);
+  //     });
+  //     return ()=>{
+  //       const wss = ws;
+  //       if(wss!==null)wss.close();
+  //     }
+  //   }
+  // },[])
+
   useEffect(()=>{
     if(user.isLoggedIn===false) navigate('/form?type=login');
     else{
@@ -74,7 +93,7 @@ const Chat = ({user})=>{
     })
     .catch(console.error)
   }
-  },[user,navigate])
+  },[user])
   // useEffect(()=>{
   //   if(incomingCall)
   // },[incomingCall])
@@ -87,7 +106,7 @@ const Chat = ({user})=>{
             {incomingCall.ringing?<IncomingCall setCallInfo={setCallInfo} setCallStatus={setCallStatus} ws={ws} />:''}
             <ContainerWrapper>
               <ContactsContainer>
-                <Header hType={'userHeader'} _name={user.name?.first}/>
+                <Header hType={'userHeader'} _name={user.name?.firstName}/>
                 <SearchAdd setSearch={setSearch}/>
                 {contacts?<Contacts search={search} selectedUserState={selectedUserState} dispatchSelectedUser={dispatchSelectedUser} contacts={contacts}/>:''}
               </ContactsContainer>
@@ -106,7 +125,7 @@ const Chat = ({user})=>{
                 }
               </HeaderWrapper>
               {callInfo.onCall?
-              <CallContainer callStatus={callStatus} setCallStatus={setCallStatus} username = {user.username} callInfo={callInfo} setCallInfo={setCallInfo}/>
+              <CallContainer ws={ws} callStatus={callStatus} setCallStatus={setCallStatus} username = {user.username} callInfo={callInfo} setCallInfo={setCallInfo}/>
               :''}
             </ContainerWrapper>
           </chatHistoryDispatchContext.Provider>

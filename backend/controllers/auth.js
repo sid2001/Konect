@@ -5,12 +5,14 @@ exports.postTokenLogin = (req,res,next)=>{
   const payload = req.tokenPayload;
   const userData = {
     authType:'google',
-    email:payload.email,//add email verification too
-    name:{first:payload.given_name,last:payload.family_name},
-    username: generateFromEmail(payload.email,6)
+    userData:{
+      username:generateFromEmail(payload.email,6),
+      name:{first:payload.given_name,last:payload.family_name},
+      email:payload.email
+    },//add email verification too
   }
   User.findOne({
-    authType:'google',email:payload.email//also implement some uid 
+    authType:'google','userData.email':payload.email//also implement some uid 
   })
   .then(user=>{
     if(!user){
@@ -28,7 +30,7 @@ exports.postTokenLogin = (req,res,next)=>{
   .then((userdata)=>{
     req.session.authType = 'google';
     req.session.userId = userdata._id;
-    req.session.username = userdata.username;
+    req.session.username = userdata.userData.username;
     req.session.isLoggedIn = true;
     req.session.save((err)=>{
       if(err) console.log('error saving session: ',err);
@@ -37,8 +39,8 @@ exports.postTokenLogin = (req,res,next)=>{
     const userPayload = {
       isLoggedIn:true,
       userType:1,
-      username:userdata.username,
-      name:userdata.name,
+      username:userdata.userData.username,
+      name:userdata.userData.name,
     }
     res.status(202).json(JSON.stringify(userPayload));
   })
@@ -63,14 +65,14 @@ exports.getUser = (req,res,next)=>{
 exports.postLogIn = (req,res,next)=>{
 
   User.findOne(
-    {username:req.body.username,passwordHash:req.body.passwordHash}
+    {'userData.username':req.body.username,passwordHash:req.body.passwordHash}
   )
   .then(user=>{
     if(!user) next(new Error('Login failed!! Wrong Credentials!!'));
     else{
       req.session.authType = 'regular';
       req.session.userId = user._id;
-      req.session.username = user.username;
+      req.session.username = user.userData.username;
       req.session.isLoggedIn = true;
       req.session.save(err=>{
         if(err) console.log("Error saving session!!: ",err);
@@ -79,8 +81,8 @@ exports.postLogIn = (req,res,next)=>{
       const userPayload = {
         isLoggedIn:true,
         userType:1,
-        username:user.username,
-        name:user.name,
+        username:user.userData.username,
+        name:user.userData.name,
       }
       res.status(202).json(JSON.stringify(userPayload));
     }
@@ -93,14 +95,24 @@ exports.postLogIn = (req,res,next)=>{
 exports.postRegister = (req,res,next)=>{
   
   User.findOne(
-    {$or:[{username:req.body.username},{email:req.body.email}]}
+    {$or:[{'userData.username':req.body.username},{'userData.email':req.body.email}]}
   )
   .then(user=>{
     if(user) throw new Error('Credentials not available');
     else{
-      const user = new User(
-        {...req.body,authType:'regular'}//correct this;assign each parameter manually this can cause errors
-      )
+      const data = {
+        authType:'regular',
+        passwordHash:req.body.passwordHash,
+        userData:{
+          name:{
+            firstName:req.body.name.first,
+            lastName:req.body.name.last
+          },
+          username:req.body.username,
+          email:req.body.email
+        }
+      }
+      const user = new User(data)
       user
       .save()
       .then((user)=>{

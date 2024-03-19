@@ -14,19 +14,21 @@ async function messageHandler(e) {
         const payload = {
           type:'create_room',
           data:{
-            username:ssc.username
+            isAudio:this.isAudio,
+            username:this.username
           }
         }
-        ssc.send(JSON.stringify(payload));
+        this.send(JSON.stringify(payload));
       }
       else{
         const payload = {
           type:'register_receiver',
           data:{
-            username:ssc.username
+            isAudio:this.isAudio,
+            username:this.username
           }
         }
-        ssc.send(JSON.stringify(payload));
+        this.send(JSON.stringify(payload));
       }
       break;
     }
@@ -37,15 +39,16 @@ async function messageHandler(e) {
         const payload = {
           type:'room_created_notify_receiver',
           data:{
+            isAudio:this.isAudio,
             receiver:this.receiver,
             roomId:json.data.roomId
           }
         }
-        ssc.send(JSON.stringify(payload));
+        this.send(JSON.stringify(payload));
       }
       console.log('room created');
       const roomId = json.data.roomId;
-      msc = new MediaSoupClient('producer',this,roomId,this.username,localStream,this.remoteVideo);
+      msc = new MediaSoupClient('producer',this,roomId,this.username,localStream,this.remoteVideo,this.audioTrack,this.isAudio,this.remoteAudio);
       console.log('initialized msc');
       await msc.createDevice();
       await msc.getRtpCapabilites();
@@ -66,6 +69,7 @@ async function messageHandler(e) {
     case 'producerId':{
       console.log('producerId received.');
       msc.producerId = json.data.producerId;
+      msc.videoProducerIdReceived = true;
       break;
     }
     case 'consumerParams':{
@@ -81,9 +85,12 @@ async function messageHandler(e) {
       
       break;
     }
+    default:{
+      console.log("Invalid message type: ",json.type);
+    }
   }
 }
-const connectSignallingServer =  ({username,track,receiver,isCaller,remoteVideo})=>{
+const connectSignallingServer =  ({username,track,receiver,isCaller,remoteVideo,audioTrack,isAudio,remoteAudio})=>{
   ssc = new WebSocket(import.meta.env.VITE_SIGNALLING_SERVER_URL);
   console.log(ssc);
   localStream = track;
@@ -98,6 +105,9 @@ const connectSignallingServer =  ({username,track,receiver,isCaller,remoteVideo}
   ssc.isCaller = isCaller;
   ssc.onmessage = messageHandler;
   ssc.remoteVideo = remoteVideo;
+  ssc.audioTrack = audioTrack;
+  ssc.isAudio = isAudio;
+  ssc.remoteAudio = remoteAudio;
   ssc.addEventListener('close',()=>{console.log('ss connection closed!')});
   return ssc;
 }

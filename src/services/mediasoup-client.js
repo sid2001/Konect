@@ -19,12 +19,12 @@ let params = {
     },
   ],
   // https://mediasoup.org/documentation/v3/mediasoup-client/api/#ProducerCodecOptions
-  // codecOptions: {
-    // videoGoogleStartBitrate: 1000
-  // }
+  codecOptions: {
+    videoGoogleStartBitrate: 1000
+  }
 }
 class MediaSoupClient {
-  constructor(type,ss,roomId,username,localVideoSource,remoteVideo){
+  constructor(type,ss,roomId,username,localVideoSource,remoteVideo,audioTrack,isAudio,remoteAudio){
     this.type = type;
     this.ss = ss;
     this.producerId = null;
@@ -32,6 +32,10 @@ class MediaSoupClient {
     this.username = username;
     this.params = {track:localVideoSource,...params};
     this.remoteVideo = remoteVideo;
+    this.videoProducerIdReceived = false;
+    this.audioParams = {track:audioTrack}
+    this.isAudio = isAudio;
+    this.remoteAudio = remoteAudio;
     // console.log('constructor: ',username);
   }
   createDevice = async ()=>{
@@ -130,7 +134,8 @@ class MediaSoupClient {
   }
   
   connectSendTransport = async () =>{
-    this.producer = await this.producerTransport.produce(this.params);
+    if(this.isAudio===true) this.producer = await this.producerTransport.produce(this.audioParams);
+    else this.producer = await this.producerTransport.produce(this.params);
 
     this.producer.on('trackended',()=>{
       console.log('track ended');
@@ -174,7 +179,13 @@ class MediaSoupClient {
         errback(err)
       }
     })
-    this.connectRecvTransport();
+    const producerWaitInterval = setInterval(()=>{
+      if(this.videoProducerIdReceived){
+        this.connectRecvTransport();
+        clearInterval(producerWaitInterval);
+      }
+    },1000);
+    
   }
 
   connectRecvTransport = async ()=>{
@@ -199,7 +210,10 @@ class MediaSoupClient {
     })
     const {track} = this.consumer;
     console.log('track',track);
-    this.remoteVideo.srcObject = new MediaStream([track]);
+    if(this.isAudio===true)
+      this.remoteAudio.srcObject = new MediaStream([track]);
+    else 
+      this.remoteVideo.srcObject = new MediaStream([track]);
 
     const payload = {
       type:'consumerResume',

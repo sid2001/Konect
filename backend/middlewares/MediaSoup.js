@@ -6,6 +6,7 @@ const SFUServer = require('../medisoupServer');
 const rooms = new Map();
 const producers = new Map();
 const clients = new Map();
+const audioClients = new Map();
 
 const SignallingServer = new ws.WebSocketServer({
   // server:httpsServer,
@@ -22,6 +23,7 @@ const ss = SignallingServer;
 const eventEmitter = new EventEmitter();
 
 async function signallingMessageHandler(data) {
+  try{
   // console.log(JSON.parse(event.toString('utf8')));
   const json = JSON.parse(data.toString('utf8'));
   const roomId =json?.data?.roomId;
@@ -48,7 +50,8 @@ async function signallingMessageHandler(data) {
       break;
     }
     case 'register_receiver':{
-      clients.set(json.data.username,this);
+      if(json.data.isAudio===true) audioClients.set(json.data.username,this);
+      else clients.set(json.data.username,this);
       break;
     }
     case 'room_created_notify_receiver':{
@@ -58,7 +61,8 @@ async function signallingMessageHandler(data) {
           roomId:json.data.roomId
         }
       }
-      clients.get(json.data.receiver).send(JSON.stringify(payload));
+      if(json.data.isAudio===true) audioClients.get(json.data.receiver).send(JSON.stringify(payload));
+      else clients.get(json.data.receiver).send(JSON.stringify(payload));
       break;
     }
     case 'createWebRtcTransport':{
@@ -129,6 +133,9 @@ async function signallingMessageHandler(data) {
       console.error('invlaid signal type');
     }
   }
+}catch(err){
+  console.error(err);
+}
 }
 ss.on('connection',(ws)=>{
   const payload = {
@@ -155,7 +162,8 @@ eventEmitter.on('createSFU',async (ws,data,roomId)=>{
       roomId: roomId
     }
   }
-  clients.set(data.username,ws);
+  if(data.isAudio===true) audioClients.set(data.username,ws);
+  else clients.set(data.username,ws);
   await server.createWorker();
   await server.createRouter();
   await server.getRouterRtpCapabilities();

@@ -46,6 +46,10 @@ const messageHandler = (data,dispatchChatHistory,dispatchIncomingCall,setCallSta
         setCallStatus('accepted');
         break;
       }
+      case 'call_ended':{
+        setCallStatus('call_ended');
+        break;
+      }
       default:{
         throw Error('Invalid message type: ',data.type);
       }
@@ -54,7 +58,7 @@ const messageHandler = (data,dispatchChatHistory,dispatchIncomingCall,setCallSta
     console.error(err);
   }
 }
-const connectChat = (username,dispatchChatHistory,dispatchIncomingCall,setCallStatus)=>{
+const connectChat = (username,dispatchChatHistory,dispatchIncomingCall,setCallStatus,setWsStatus)=>{
   const ws = new WebSocket(import.meta.env.VITE_WEBSOCKET_URL_CHAT)
 
   const heartbeat = ()=>{
@@ -70,6 +74,7 @@ const connectChat = (username,dispatchChatHistory,dispatchIncomingCall,setCallSt
 }
 
 ws.addEventListener('open',(e)=>{
+  setWsStatus(1);
   ws.send(JSON.stringify(
     {type:'ack',username:username}
     ));
@@ -83,7 +88,11 @@ ws.onmessage = (e)=>{
     console.log(err);
   }
 }
-ws.addEventListener('ping',heartbeat);
+ws.onclose = (event)=>{
+  setWsStatus(0);
+  console.log('socket closed');
+}
+ws.addEventListener('pong',heartbeat);
 return ws;
 }
 

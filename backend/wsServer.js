@@ -57,6 +57,10 @@ const messageHandler = (data,ws)=>{
         clients.get(data.peerInfo).send(JSON.stringify(payload));
         break;
       }
+      case 'call_ended':{
+        clients.get(data.data.recipient).send(JSON.stringify({...data,data:''}));
+        break;
+      }
       default :{
         throw Error('Invalid message type: ' + data.type)
       }
@@ -90,9 +94,9 @@ const verifyClient = async (info,cb)=>{
   });
 const pingHandler = () =>{
   const interval = setInterval(()=>{
-    if(wss.clients.size>0)
+    if(clients.size>0)
       // console.log(clients.size);
-    wss.clients.forEach((sock)=>{
+    clients.forEach((sock)=>{
       // console.log('pinging');
       if(sock.isAlive === false){
         // sock.emit('close');//why not emitting
@@ -127,9 +131,9 @@ const pingHandler = () =>{
     wss.pinger = pingHandler();
     ws.isAlive = true;
     ws.on('error',console.error);
-    ws.on('close',()=>{
+    ws.on('close',(code)=>{
       clients.delete(ws.username);
-      console.log('closed socket');
+      console.log('closed socket with code: ',code);
     })
     ws.on('pong',()=>{
         heartbeat(ws);
