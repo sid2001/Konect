@@ -13,12 +13,15 @@ const messageHandler = (data,ws)=>{
     console.log(data);
     switch(data.type){
       case 'msg':{
-        console.log('forwarding message to: ',data.recipient);
-        clients.get(data.recipient).send(JSON.stringify(data));
+        console.log(this.username);
+        if(data.recipient!==this.username){
+          console.log('forwarding message to: ',data.recipient);
+          clients.get(data.recipient).send(JSON.stringify(data));
+        }
         break;
       }
       case 'ack':{
-        ws.username = data.username;
+        this.username = data.username;
         clients.set(data.username,ws);
         break;
       }

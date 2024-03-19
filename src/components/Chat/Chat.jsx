@@ -114,7 +114,7 @@ const Chat = ({user})=>{
                 {
                   selectedUserState.selectedUser?
                   <>
-                    <Header setCallStatus={setCallStatus} setCallInfo={setCallInfo} hType={'friendHeader'} _name={user.username} ws={ws} selectedUserState = {selectedUserState}/>
+                    <Header user={user} setCallStatus={setCallStatus} setCallInfo={setCallInfo} hType={'friendHeader'} _name={user.username} ws={ws} selectedUserState = {selectedUserState}/>
                     <ChatBox selectedUserState={selectedUserState}/>
                     <InputBox ws={ws} user={user} dispatchSelectedUser={dispatchSelectedUser} selectedUserState={selectedUserState} value={selectedUserState.messages[selectedUser]}/>
                   </>

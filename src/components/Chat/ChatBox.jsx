@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext,useEffect,useRef } from "react";
 import chatHistory from "../../data/chatHistory";
 
 import Card from "../UI/card";
@@ -25,22 +25,34 @@ const chatCard = (data,selectedUser)=>{
   )
 }
 
-const getUserChat = (id)=>{
-
-}
-
 const ChatBox = ({selectedUserState})=>{
   const chatHistory = useContext(chatHistoryContext);
+  const messagesEndRef = useRef(null);
+  const chatCount = chatHistory[selectedUserState['selectedUser']]?.length;
   let id = 1;
+
+  useEffect(() => {
+    // Scrolls to the latest message when component mounts or chat history changes
+    scrollToBottom(false);
+  }, [chatHistory,selectedUserState]);
+
+  const scrollToBottom = (smoothScroll) => {
+    messagesEndRef.current?.scrollIntoView({ behavior: smoothScroll?"smooth":"auto"});
+  };
+
   return(
     <div className="ChatContainer">
       <ul>
         {
         chatHistory[selectedUserState['selectedUser']]?.map((data)=>{
-          return <li key={id++}>{chatCard(data,selectedUserState['selectedUser'])}</li>
+          if(chatCount===id)
+            return <li ref = {messagesEndRef} key={id++}>{chatCard(data,selectedUserState['selectedUser'])}</li>
+          else 
+            return <li key={id++}>{chatCard(data,selectedUserState['selectedUser'])}</li>
         })
       }
       </ul>
+      <div />
     </div>
   )
 }
