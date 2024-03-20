@@ -177,7 +177,7 @@ const CallContainer = ({ws,callInfo,setCallInfo,username,callStatus,setCallStatu
   return (
     
     (callInfo.onCall)?
-      <div id="video-container"  ref={vidRef} className="video-box-m" onMouseEnter={hoverHandler} onMouseLeave={hoverHandler}>
+      <div id="video-container"  ref={vidRef} className="video-box-m" >
         <button className="video-close-btn" onClick={closeVideo}>
             <img src={cross} alt="close" />
         </button>

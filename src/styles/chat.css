@@ -93,7 +93,19 @@ button.call-btn{
   flex-direction: column;
   /* border: white solid 1px; */
   height: auto;
+  /* opacity: 0; */
   padding: 0 10px 10px 10px;
+  
+}
+.friend-message.latest,
+.user-message.latest {
+  opacity: 0;
+  transition: opacity 0.5s ease-in;
+  /* opacity: 1; */
+}
+.friend-message.latest,
+.user-message.latest {
+  opacity: 1;
 }
 .user-message >.card{
   position: relative;

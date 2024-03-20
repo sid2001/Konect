@@ -4,10 +4,10 @@ import chatHistory from "../../data/chatHistory";
 import Card from "../UI/card";
 import { chatHistoryContext } from "../Context/ChatContext";
 
-const chatCard = (data,selectedUser)=>{
+const chatCard = (data,selectedUser,isLatest)=>{
   const classname = data.sender===selectedUser?'friend-message':'user-message';
   return(
-    <div className={classname}>
+    <div className={`${classname} ${isLatest===true?'latest':null}`}>
       <Card>
       <p className={`${classname}-content`} >
         {data.message}
@@ -46,9 +46,9 @@ const ChatBox = ({selectedUserState})=>{
         {
         chatHistory[selectedUserState['selectedUser']]?.map((data)=>{
           if(chatCount===id)
-            return <li ref = {messagesEndRef} key={id++}>{chatCard(data,selectedUserState['selectedUser'])}</li>
+            return <li ref = {messagesEndRef} key={id++}>{chatCard(data,selectedUserState['selectedUser'],true)}</li>
           else 
-            return <li key={id++}>{chatCard(data,selectedUserState['selectedUser'])}</li>
+            return <li key={id++}>{chatCard(data,selectedUserState['selectedUser'],false)}</li>
         })
       }
       </ul>

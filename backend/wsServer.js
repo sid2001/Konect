@@ -8,7 +8,8 @@ const heartbeat = (ws) => {
 }
 const clients = new Map();
 
-const messageHandler = (data,ws)=>{
+function messageHandler(dat){
+  const data = JSON.parse(dat);
   try{
     console.log(data);
     switch(data.type){
@@ -18,11 +19,12 @@ const messageHandler = (data,ws)=>{
           console.log('forwarding message to: ',data.recipient);
           clients.get(data.recipient).send(JSON.stringify(data));
         }
-        break;
+        break;  
       }
       case 'ack':{
         this.username = data.username;
-        clients.set(data.username,ws);
+        console.log('username: ',this.username);
+        clients.set(data.username,this);
         break;
       }
       case 'connect_call':{
@@ -32,7 +34,7 @@ const messageHandler = (data,ws)=>{
         }
         try{
         clients.get(data.recipient).send(JSON.stringify(payload));
-        ws.send(JSON.stringify(
+        this.send(JSON.stringify(
           {
             type:'ringing'
           }
@@ -41,7 +43,7 @@ const messageHandler = (data,ws)=>{
           const payload = {
             type:'connect_call_failed',
           }
-          ws.send(JSON.stringify(payload));
+          this.send(JSON.stringify(payload));
           console.error(err);
         }
         break;
@@ -142,10 +144,11 @@ const pingHandler = () =>{
         heartbeat(ws);
       }
     );
-    ws.on('message',(m)=>{
-      const json = JSON.parse(m);
-      messageHandler(json,ws);
-    });
+    ws.on('message',messageHandler)
+    //  function (m){
+      // const json = JSON.parse(m);
+      // messageHandler(this,json,ws);
+    // });
     ws.send(JSON.stringify({type:'ack',data:'acknowledged!!'}))
     // cb();
   })
