@@ -95,7 +95,6 @@ const verifyClient = async (info,cb)=>{
     noServer:true,
     path:'/chat',
     clientTracking:true,
-
   });
 const pingHandler = () =>{
   const interval = setInterval(()=>{

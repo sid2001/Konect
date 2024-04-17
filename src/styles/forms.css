@@ -1,16 +1,19 @@
 #form-container{
-  position:absolute;
+  /* position:absolute; */
+  position:relative;
   display: flex;
   flex-direction: column;
   border: 1px solid white;
   background: linear-gradient(rgb(128, 208, 239),black);
   align-items: center;
-  margin: auto;
+  margin:auto;
+  margin-top: 15vh;
   color: black;
   border: none;
   border-radius:20px;
   max-width: 500px;
   overflow: hidden;
+
   /* opacity: 0.5; */
 }
 ::placeholder{

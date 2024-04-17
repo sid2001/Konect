@@ -16,9 +16,9 @@ const chatCard = (data,selectedUser,isLatest)=>{
         <div className={`${classname}-time`}>
           {data.time}
         </div>
-        <div className={`${classname}-status`}>
+        {/* <div className={`${classname}-status`}>
           <p>read</p>
-        </div>
+        </div> */}
       </div>
       </Card>
     </div>

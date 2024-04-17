@@ -1,10 +1,10 @@
 import {BrowserRouter,Routes,Route,Link,Navigate} from 'react-router-dom';
 import Chat from './components/Chat/Chat';
-import Home from './components/Chat/Home';
+import Home from './components/CommunityForum/Home';
 import Forms from './components/Forms/Forms';
 import TestComponent from './components/TestComponent';
 import getUser from './utils/getUser';
-import { UserContext } from './components/Context/userContext';
+import { UserContext } from './components/Context/userContext.js';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import './App.css'
 import { useState,useEffect } from 'react';

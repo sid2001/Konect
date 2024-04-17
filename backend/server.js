@@ -15,7 +15,7 @@ const ss = require('./middlewares/MediaSoup.js')
 const userRoute = require('./routes/user');
 const testRoute = require('./routes/test');
 const {OAuth2Client} = require('google-auth-library');
-const {redisClient} = require('./redisClient');
+// const {redisClient} = require('./redisClient');
 const app = express();
 require('dotenv').config();
 const credentials = {key:fs.readFileSync("./key.pem"),cert:fs.readFileSync("./cert.pem")};

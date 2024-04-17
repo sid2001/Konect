@@ -1,0 +1,12 @@
+body{
+  margin: 0;
+  width: 100vw;
+  background-color: rgba(24, 24, 24, 0.635);
+  /* overflow-x:hidden ; */
+}
+#home-container{
+  position: relative;
+  width: auto;
+  height: 100%;
+  padding:0 10px 10px 10px;
+}
