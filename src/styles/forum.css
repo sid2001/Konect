@@ -1,6 +1,7 @@
-#forum{
-  width:60vw;
+#forum-container{
+  width:100%;
   display: flex;
-  max-width: 700px;
+  min-width: 400px;
+  justify-content: center;
+  background-color: rgb(0, 1, 3);
 }
-
