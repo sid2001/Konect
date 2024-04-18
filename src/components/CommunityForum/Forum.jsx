@@ -1,13 +1,14 @@
 import { postReducer } from '/src/reducer/forum.js';
-import { PostContext, PostDispatchContext,PostFilterContext,ChangeFilterContext } from '/src/components/Context/ForumContext.js';
+import { PostContext, PostDispatchContext,PostFilterContext,ChangeFilterContext,PostPremiseContext,ChangePostPremiseContext } from '/src/components/Context/ForumContext.js';
 import { useReducer,useContext, useState } from 'react';
 import ForumHeader from './ForumHeader.jsx';
+import Posts from './Posts.jsx';
 import '/src/styles/forum.css'
 
 const Forum = ()=>{
   const [posts,dispatchPosts] = useReducer(postReducer,[]);
-  const filterPost = useContext(PostFilterContext);
-  const [filter,setFilter] = useState(filterPost);
+  const [filter,setFilter] = useState(useContext(PostFilterContext));
+  const [postPremise,setPostPremise] = useState(useContext(PostPremiseContext));
 
   return(
     //create a forum for displaying posts
@@ -15,9 +16,16 @@ const Forum = ()=>{
       <PostDispatchContext.Provider value={dispatchPosts}>
         <PostFilterContext.Provider value={filter}>
           <ChangeFilterContext.Provider value={setFilter}>
-            <div id='forum-container'>
-              <ForumHeader/>
-            </div>
+            <PostPremiseContext.Provider value={postPremise}>
+              <ChangePostPremiseContext.Provider value={setPostPremise}>
+                <div id='forum-container'>
+                  <div id='forum-wrapper'>
+                    <ForumHeader/>
+                    <Posts/>  
+                  </div>
+                </div>
+              </ChangePostPremiseContext.Provider>
+            </PostPremiseContext.Provider>
           </ChangeFilterContext.Provider>
         </PostFilterContext.Provider>
       </PostDispatchContext.Provider>

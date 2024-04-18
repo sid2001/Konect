@@ -6,14 +6,14 @@ button.call-btn{
 
 .container-wrapper{
   /* background: rgb(56,9,53); */
-  background: radial-gradient(circle, rgba(56,9,53,1) 0%, rgba(42,19,60,1) 10%, rgba(5,5,14,1) 40%, rgba(1,1,30,0.9164915966386554) 96%);
+  background: radial-gradient(circle, rgb(0, 0, 0) 0%, rgb(42, 42, 43) 10%, rgb(23, 23, 23) 40%, rgba(4, 4, 7, 0.916) 96%);
   position: relative;
   display: flex;
   height: 90vh;
   width: 80vw;
   flex-direction: row;
   /* border: white solid 1px; */
-  box-shadow: rgba(202, 88, 231, 0.25) 0px 0px 15px 1px;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 0px 15px 1px;
   border-radius: 8px;
   overflow: hidden;
   margin: auto;
@@ -83,7 +83,7 @@ button.call-btn{
   border-radius: 10px;
   overflow-y: scroll;
   flex-direction: column;
-  background: linear-gradient(18deg, rgba(56,9,53,1) 31%, rgba(42,19,60,1) 59%);
+  background: linear-gradient(18deg, rgb(38, 36, 36) 31%, rgb(13, 12, 13) 59%);
 }
 .ChatContainer::-webkit-scrollbar{
   display: none;
@@ -305,7 +305,7 @@ button.call-btn{
 }
 .contact-picture.online>img{
   /* border: solid 2px green; */
-  box-shadow: 0px 0px 5px 2px rgb(155, 48, 242);
+  box-shadow: 0px 0px 5px 2px rgb(3, 3, 3);
 }
 .contact-detail{
   padding: 0 5px 0 5px;

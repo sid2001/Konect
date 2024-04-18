@@ -1,0 +1,17 @@
+#post-container{
+  position: relative;
+  /* display: flex; */
+  /* flex-direction: column; */
+  margin-top: 700px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  width: 80%;
+  height: 90%;
+  padding: 0px;
+  /* justify-content: center; */
+  /* justify-items: center; */
+  margin: 0 auto;
+}
+::-webkit-scrollbar{
+  width: 10px;
+}

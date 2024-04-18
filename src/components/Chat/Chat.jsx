@@ -18,6 +18,7 @@ import { incomingCallReducer,initialNotificationState } from "../../reducer/noti
 import { chatUserStateReducer,initialState } from "../../reducer/chatReducer";
 import { chatHistoryReducer, initialChatHistory} from "../../reducer/chatReducer";
 import connectChat from '/src/services/WebSocketServer.js'
+import Navbar from "../CommunityForum/Navbar";
 import dog from '/src/assets/dog.svg';
 import '/src/styles/chat.css';
 import '/src/styles/vc.css';
@@ -104,6 +105,7 @@ const Chat = ({user})=>{
         <chatHistoryContext.Provider value={chatHistory}>
           <chatHistoryDispatchContext.Provider value={dispatchChatHistory}>
             {incomingCall.ringing?<IncomingCall setCallInfo={setCallInfo} setCallStatus={setCallStatus} ws={ws} />:''}
+            <Navbar/>
             <ContainerWrapper>
               <ContactsContainer>
                 <Header hType={'userHeader'} _name={user.name?.firstName}/>
@@ -120,7 +122,7 @@ const Chat = ({user})=>{
                   </>
                   :
                   <div id="dog-image">
-                    <img src={dog} alt="Hi!!" />
+                    {/* <img src={dog} alt="Hi!!" /> */}
                   </div>
                 }
               </HeaderWrapper>

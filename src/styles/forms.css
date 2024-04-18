@@ -1,14 +1,20 @@
+#root{
+  background-color: transparent;
+}
+body{
+  background-color: transparent;
+}
 #form-container{
   /* position:absolute; */
   position:relative;
   display: flex;
   flex-direction: column;
   border: 1px solid white;
-  background: linear-gradient(rgb(128, 208, 239),black);
+  background: linear-gradient(rgb(46, 46, 46),rgb(29, 28, 28));
   align-items: center;
   margin:auto;
   margin-top: 15vh;
-  color: black;
+  color: white;
   border: none;
   border-radius:20px;
   max-width: 500px;
@@ -66,6 +72,9 @@ input.invalid {
   box-shadow: 0px 0px 4px 1px rgba(255, 0, 0, 0.429);
 
 }
+label{
+  color: rgba(255, 255, 255, 0.585);
+}
 .input-container label{
   margin: 0px 0px 5px 5px;
 }
@@ -116,7 +125,8 @@ input.invalid {
   cursor: pointer;
 }
 .design{
-  background-color: rgb(84, 188, 248);
+  /* background-color: rgb(60, 63, 65); */
+  background-color: transparent;
   position: absolute;
   margin: 0;
   margin: 0;
@@ -130,13 +140,14 @@ input.invalid {
 .design.curve1{
   left: -200px;
   top:-200px;
+  /* background-color: transparent; */
   filter: blur(1px);
 }
 .design.curve2{
   filter: blur(2px);
   width:150px;
   height: 150px;
-  background-color: rgba(251, 114, 182, 0.879);
+  background-color: rgba(107, 104, 106, 0.879);
   right:-75px;
   top: -20px;
 }
@@ -144,7 +155,7 @@ input.invalid {
   filter: blur(4px);
   width:75px;
   height: 75px;
-  background-color: rgb(251, 157, 204);
+  background-color:  rgba(107, 104, 106, 0.879);
   right: 50px;
   bottom: 45px;
 }

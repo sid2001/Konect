@@ -1,5 +1,4 @@
 const Post = class{
-
   constructor({postId,userData, title, description,image,document, metaData}){
     this.postId = postId;
     this.userId = userData.userId;

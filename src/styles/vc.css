@@ -31,7 +31,7 @@
   position: relative;
   width: 50%;
   margin: 20px 5px 20px 5px;
-  background-color: rgb(36, 36, 70);
+  background-color: rgb(28, 28, 30);
   /* border: solid 1px white; */
   border-radius: 20px;
 }
@@ -40,7 +40,7 @@
   width: 100%;
   display: block;
   height: 12%;
-  background-color: rgba(0, 0, 0, 0.77);
+  background-color: rgba(7, 7, 7, 0.77);
   box-shadow: 0px -10px 5px 0px rgba(0, 0, 0, 0.77);
   bottom: 0px;
   border-radius: 0px 0px 20px 20px;
