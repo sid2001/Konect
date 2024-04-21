@@ -2,11 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import '/src/styles/forms.css';
 import Register from "./Register";
 import Login from "./login";
+import Navbar from "../NavBar/Navbar";
 import { useLocation, useParams,useNavigate } from "react-router-dom";
 import { googleLogout,useGoogleLogin } from "@react-oauth/google";
 import googleIcon from "/src/assets/google-icon.svg";
 import { getUserInfo,authToken } from "../../utils/googleAuth";
-
+import "/src/styles/navbar.css"
 const Forms = ({setStatus,setUser})=>{
   const [authCode,setAuthCode] = useState('');
   const [verifiedToken,setVerifiedToken] = useState(false);
@@ -74,23 +75,27 @@ const Forms = ({setStatus,setUser})=>{
   })
 
   return(
-    <div ref={myRef} id="form-container">
-      <img className="design curve1"></img>
-      {mode===0?<img className="design curve2"></img>:''}
-      <img className="design curve3"></img>
-      <div className="header">
-        <h1  className="heading">{modes[mode]}</h1>
-      <div className="options">
-      <div onClick={changeMode} className={`${modes[(mode+1)%2].toLowerCase()}`}>{`${modes[(mode+1)%2].toLowerCase()}`}</div>
-      </div>  
-      </div>
-      {mode===0?<Register setMode={setMode}/>:<Login/>}
-      <div className="google-button-wrapper">
-        <img className="google-icon" src={googleIcon} alt="" />
-        <button onClick={login} className="google-login-btn">Sign in with Google🚀</button>
-      </div>
+    <div>
+      <Navbar isForm={true}/>
+      <div ref={myRef} id="form-container">
+        <img className="design curve1"></img>
+        {mode===0?<img className="design curve2"></img>:''}
+        <img className="design curve3"></img>
+        <div className="header">
+          <h1  className="heading">{modes[mode]}</h1>
+        <div className="options">
+        <div onClick={changeMode} className={`${modes[(mode+1)%2].toLowerCase()}`}>{`${modes[(mode+1)%2].toLowerCase()}`}</div>
+        </div>  
+        </div>
+        {mode===0?<Register setMode={setMode}/>:<Login/>}
+        <div className="google-button-wrapper">
+          <img className="google-icon" src={googleIcon} alt="" />
+          <button onClick={login} className="google-login-btn">Sign in with Google🚀</button>
+        </div>
       
     </div>
+    </div>
+    
   )
 }
 

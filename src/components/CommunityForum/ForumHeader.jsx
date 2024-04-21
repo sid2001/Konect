@@ -1,11 +1,16 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { PostFilterContext,ChangeFilterContext,PostPremiseContext,ChangePostPremiseContext } from '/src/components/Context/ForumContext.js';
+import CreatePost from './CreatePost.jsx';
+import {Store as store} from 'react-notifications-component'
 import "/src/styles/forumheader.css"
+import { UserContext } from '../Context/userContext.js';
 const ForumHeader = ()=>{
   const filterPost = useContext(PostFilterContext);
   const changeFilter = useContext(ChangeFilterContext);
   const postPremise = useContext(PostPremiseContext);
   const changePostPormise = useContext(ChangePostPremiseContext);
+  const {user} = useContext(UserContext);
+  const [createPost,setCreatePost] = useState(false);
   const filterHandler = (e)=>{
     const data = e.target.attributes.data.value;
     const cnt = document.getElementById("dropdown-content");
@@ -22,6 +27,31 @@ const ForumHeader = ()=>{
       }
       default :{
         cnt.style.display = 'none';
+      }
+    }
+  }
+
+  const createPostHandler = ()=>{
+    switch(user?.isLoggedIn){
+      case true:{
+        console.log('createPost');
+        setCreatePost(true);
+        break;
+      }
+      default:{
+        store.addNotification({
+        title: 'Guest user',
+        message: 'Login to start posting',
+        type: 'warning',
+        insert: 'top',
+        container: 'top-left',
+        animationIn: ["animated", "fadeIn"],
+        animationOut: ["animated", "fadeOut"],
+        dismiss: {
+          duration: 2000,
+          onScreen: true
+        }
+        });
       }
     }
   }
@@ -58,9 +88,10 @@ const ForumHeader = ()=>{
         </div>
       </div>
       <div id="forum-header-right">
-        <img src={'/src/assets/create-icon.png'} alt="" />
+        <img onClick={createPostHandler} src={'/src/assets/create-icon.png'} alt="" />
         <span>Create</span>
       </div>
+      {createPost?<CreatePost setCreatePost={setCreatePost}/>:''}
     </div>
   )
 }

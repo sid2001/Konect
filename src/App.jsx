@@ -6,7 +6,7 @@ import TestComponent from './components/TestComponent';
 import getUser from './utils/getUser';
 import { UserContext } from './components/Context/userContext.js';
 import { GoogleOAuthProvider } from '@react-oauth/google';
-import './App.css'
+import './App.css';
 import { useState,useEffect } from 'react';
 
 

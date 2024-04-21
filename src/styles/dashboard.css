@@ -10,9 +10,9 @@
   display: flex;
   position: static;
   margin:5px 10px 0px 0px ;
-  background-color: rgba(33, 33, 33, 0.762);
+  background-color: rgb(11, 20, 22);
   border-radius: 20px;
   height: 100%;
-  background-color: black;
+  /* background-color: black; */
   flex-direction: column; 
 }

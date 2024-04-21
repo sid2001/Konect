@@ -1,8 +1,8 @@
 import { useContext } from 'react'
 // import { UserContext } from '/src/Context/userContext';
 import Forum from './Forum';
-import Navbar from './Navbar';
-import {PostFilterContext} from '/src/components/Context/ForumContext.js';
+import Navbar from '../NavBar/Navbar';
+// import {PostFilterContext} from '/src/components/Context/ForumContext.js';
 import Dashboard from './Dashboard';
 import QuickAccess from './QuickAccess';
 import '/src/styles/home.css';

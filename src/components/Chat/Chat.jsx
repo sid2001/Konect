@@ -18,7 +18,7 @@ import { incomingCallReducer,initialNotificationState } from "../../reducer/noti
 import { chatUserStateReducer,initialState } from "../../reducer/chatReducer";
 import { chatHistoryReducer, initialChatHistory} from "../../reducer/chatReducer";
 import connectChat from '/src/services/WebSocketServer.js'
-import Navbar from "../CommunityForum/Navbar";
+import Navbar from "../NavBar/Navbar";
 import dog from '/src/assets/dog.svg';
 import '/src/styles/chat.css';
 import '/src/styles/vc.css';

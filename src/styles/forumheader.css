@@ -7,7 +7,7 @@
   flex-direction: row;
   padding: 2px 20px 2px 10px;
   margin: 0px auto 0px auto;
-  background-color: #0b1416;
+  background-color: rgb(11, 20, 22);
   border-radius: 20px;
   margin-bottom: 5px;
 }
@@ -33,7 +33,8 @@
   justify-items: center;
 }
 #forum-header-left .forum-header-dropdown .dropbtn:hover, #post-type button:hover{
-  background-color: rgba(107, 107, 107, 0.421);
+  /* background-color: rgba(107, 107, 107, 0.421); */
+  background-color: rgb(11, 20, 22);
 }
 .forum-header-dropdown .dropbtn,#post-type button{
   border-radius:20px;
@@ -74,12 +75,20 @@
   height: 20px;
   align-self: center;
   cursor: pointer;
+  border-radius: 50%;
+  padding: 5px;
+  
 }
+
+#forum-header-right img:hover{
+  color: rgb(65, 130, 227);
+  background-color: rgba(64, 63, 63, 0.697);
+}
+
 #forum-header-right span{
   font-weight: 400;
   font-size: large;
   align-self: center;
-  cursor: pointer;
 }
 
 

@@ -9,7 +9,7 @@ button.call-btn{
   background: radial-gradient(circle, rgb(0, 0, 0) 0%, rgb(42, 42, 43) 10%, rgb(23, 23, 23) 40%, rgba(4, 4, 7, 0.916) 96%);
   position: relative;
   display: flex;
-  height: 90vh;
+  height: auto;
   width: 80vw;
   flex-direction: row;
   /* border: white solid 1px; */

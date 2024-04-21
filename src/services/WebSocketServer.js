@@ -73,27 +73,31 @@ const connectChat = (username,dispatchChatHistory,dispatchIncomingCall,setCallSt
   }, 3000 + 1000);
 }
 
-ws.addEventListener('open',(e)=>{
-  setWsStatus(1);
-  ws.send(JSON.stringify(
-    {type:'ack',username:username}
-    ));
-})
-ws.onmessage = (e)=>{
-  try{
-    // console.log('on message',e.data)
-    const json = JSON.parse(e.data);
-    messageHandler(json,dispatchChatHistory,dispatchIncomingCall,setCallStatus);
-  }catch(err){
-    console.log(err);
+  ws.addEventListener('open',(e)=>{
+    setWsStatus(1);
+    ws.send(JSON.stringify(
+      {type:'ack',username:username}
+      ));
+  })
+  ws.onmessage = (e)=>{
+    try{
+      // console.log('on message',e.data)
+      const json = JSON.parse(e.data);
+      messageHandler(json,dispatchChatHistory,dispatchIncomingCall,setCallStatus);
+    }catch(err){
+      console.log(err);
+    }
   }
-}
-ws.onclose = (event)=>{
-  setWsStatus(0);
-  console.log('socket closed');
-}
-ws.addEventListener('pong',heartbeat);
-return ws;
+  ws.addEventListener('error',((error)=>{
+    console.error('Error in websocket: ',error);
+  }))
+  ws.addEventListener('close',((event)=>{
+    setWsStatus(0);
+    console.log('socket closed: ',event);
+  }))
+
+  ws.addEventListener('pong',heartbeat);
+  return ws;
 }
 
 export default connectChat;

@@ -6,7 +6,7 @@
   justify-content: center;
   border-radius: 20px;
   margin-top: 5px;
-  background-color: rgb(32, 32, 32);
+  background-color: rgb(11, 20, 22);
   overflow: hidden;
 }
 #forum-wrapper{
@@ -18,7 +18,7 @@
   justify-content: center;
   justify-items: center;
   overflow-y: hidden;
-  background-color: black;
+  background-color:rgba(29, 28, 28, 0.845) ;
 }
 ::-webkit-scrollbar{
   width: 0px;

@@ -1,6 +1,8 @@
 import { postReducer } from '/src/reducer/forum.js';
 import { PostContext, PostDispatchContext,PostFilterContext,ChangeFilterContext,PostPremiseContext,ChangePostPremiseContext } from '/src/components/Context/ForumContext.js';
 import { useReducer,useContext, useState } from 'react';
+import {ReactNotifications} from 'react-notifications-component'
+import 'react-notifications-component/dist/theme.css'
 import ForumHeader from './ForumHeader.jsx';
 import Posts from './Posts.jsx';
 import '/src/styles/forum.css'
@@ -18,6 +20,7 @@ const Forum = ()=>{
           <ChangeFilterContext.Provider value={setFilter}>
             <PostPremiseContext.Provider value={postPremise}>
               <ChangePostPremiseContext.Provider value={setPostPremise}>
+              <ReactNotifications/>
                 <div id='forum-container'>
                   <div id='forum-wrapper'>
                     <ForumHeader/>

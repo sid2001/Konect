@@ -127,6 +127,7 @@ const pingHandler = () =>{
   // })
   wss.on('error',console.error);
   wss.on('headers',(header,req)=>{
+    console.log(header);
     //will implement something in future
   })
   wss.on('connection',(ws,request)=>{
@@ -134,7 +135,9 @@ const pingHandler = () =>{
     console.log('ws connection received!!')
     wss.pinger = pingHandler();
     ws.isAlive = true;
-    ws.on('error',console.error);
+    ws.on('error',(e)=>{
+      console.error('Error in ws: ',e);
+    });
     ws.on('close',(code)=>{
       clients.delete(ws.username);
       console.log('closed socket with code: ',code);
