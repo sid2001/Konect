@@ -166,9 +166,28 @@ const CreatePostForm = ({setCreatePost }) => {
 
   const handleImageUpload = () => {
     const files = Array.from(fileInputRef.current.files);
-    const imageUrls = files.map((file) => URL.createObjectURL(file));
-    setImages([...images, ...imageUrls]);
-    fileInputRef.current.value = ''; 
+    // Create a new array to store the image files
+  const imageData = [];
+
+  // Iterate over each file
+  files.forEach((file) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      // Add the image data to the array
+      imageData.push(event.target.result);
+      // If all files have been processed, set the state with the new array of image data
+      if (imageData.length === files.length) {
+        setImages([...images, ...imageData]);
+      }
+    };
+    console.log('file: ',file);
+    // Read the file as a data URL (base64-encoded string)
+    reader.readAsDataURL(file);
+  });
+
+
+  // Clear the file input after processing
+  fileInputRef.current.value = '';
   };
 
   const handleRemoveImage = (index) => {
@@ -180,7 +199,6 @@ const CreatePostForm = ({setCreatePost }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const postData = {
-
       title,
       description,
       images,

@@ -8,13 +8,13 @@ import Posts from './Posts.jsx';
 import '/src/styles/forum.css'
 
 const Forum = ()=>{
-  const [posts,dispatchPosts] = useReducer(postReducer,[]);
+  const [postInfo,dispatchPosts] = useReducer(postReducer,{posts:[],loading:true,error:false,fetched:false});
   const [filter,setFilter] = useState(useContext(PostFilterContext));
   const [postPremise,setPostPremise] = useState(useContext(PostPremiseContext));
 
   return(
     //create a forum for displaying posts
-    <PostContext.Provider value ={posts}>
+    <PostContext.Provider value ={postInfo}>
       <PostDispatchContext.Provider value={dispatchPosts}>
         <PostFilterContext.Provider value={filter}>
           <ChangeFilterContext.Provider value={setFilter}>

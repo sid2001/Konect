@@ -1,15 +1,12 @@
 const Post = class{
-  constructor({postId,userData, title, description,image,document, metaData}){
+  constructor({postId,userId,userData, title, description,attachment, metaData}){
     this.postId = postId;
-    this.userId = userData.userId;
+    this.userId = userId;
     this.userData = userData;
     this.data = {
       title: title,
       description: description,
-      attachment: {
-        image: image,
-        document: document
-      }
+      attachment: attachment
     };
     this.metaData = metaData;
     this.comments = [];
