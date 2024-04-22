@@ -1,8 +1,10 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef, useContext } from 'react';
+import { UserContext } from '../Context/userContext.js';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { FiUser, FiX } from 'react-icons/fi';
-
+import { createPost } from '../../utils/forum.js';
+import { Store as store } from 'react-notifications-component'
 const Overlay = styled.div`
   position: fixed;
   z-index: 2;
@@ -31,7 +33,7 @@ const FormHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: 16px; 
 `;
 
 const UserIcon = styled(FiUser)`
@@ -43,6 +45,9 @@ const FormTitle = styled.h2`
   font-size: 18px;
   font-weight: 500;
   margin: 0;
+  position: absolute;
+  right: 45%;
+  text-wrap: wrap;
 `;
 
 const FormBody = styled.div`
@@ -120,6 +125,7 @@ const SubmitButton = styled.button`
   transition-behavior: ease-in-out;
   border-radius: 20px;
   padding: 10px 15px;
+  transition-timing-function: linear;
   
   &:hover {
     color: rgb(65, 130, 227);
@@ -137,7 +143,7 @@ const CancelButton = styled.button`
   transition-behavior: ease-in-out;
   border-radius: 20px;
   padding: 10px 15px;
-  
+  transition-timing-function: linear;
   &:hover {
     color: rgb(233, 92, 118);
     background-color: rgba(63, 62, 62, 0.458);
@@ -149,7 +155,7 @@ const CreatePostForm = ({setCreatePost }) => {
   const [description, setDescription] = useState('');
   const [images, setImages] = useState([]);
   const fileInputRef = useRef(null); 
-
+  const {user} = useContext(UserContext);
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
   };
@@ -174,14 +180,52 @@ const CreatePostForm = ({setCreatePost }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const postData = {
+
       title,
       description,
       images,
     };
     console.log(postData);
-    setTitle('');
-    setDescription('');
-    setImages([]); // Close the form
+    createPost(postData)
+    .then(res=>{
+      if(res.status===202){ 
+        store.addNotification({
+          title: "Success!",
+          message: "Post created successfully!",
+          type: "success",
+          insert: "top",
+          container: "top-right",
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 2000,
+            onScreen: true
+          }
+        })
+      }else{
+        throw new Error('Post not created!');
+      }
+      setTitle('');
+      setDescription('');
+      setImages([]); 
+      setCreatePost(false);
+    }).catch(err=>{
+      console.log(err);
+      store.addNotification({
+          title: "Error",
+          message: "Post not created!",
+          type: "danger",
+          insert: "top",
+          container: "top-left",
+          animationIn: ["animated", "fadeIn"],
+          animationOut: ["animated", "fadeOut"],
+          dismiss: {
+            duration: 2000,
+            onScreen: true
+          }
+        })
+    })
+    // Close the form
   };
 
   const handleCancel = () => {

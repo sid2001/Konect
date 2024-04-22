@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-exports.auth = (req,res,next)=>{
+const userAuth = (req,res,next)=>{
   const authType = req.get('X-Auth-Type');
   switch(authType){
     case 'jwt':{
@@ -35,3 +35,6 @@ exports.auth = (req,res,next)=>{
   }
  
 }
+
+
+module.exports.userAuth = userAuth

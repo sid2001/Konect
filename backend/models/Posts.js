@@ -20,8 +20,8 @@ const postSchema = new Schema({
     title:{
       type:String,
       required:true,
-      maxlength: 50,
-      minlength:10
+      maxlength: 100,
+      minlength:1
     },
     description:{
       type:String,
@@ -58,6 +58,13 @@ const postSchema = new Schema({
       ref:'Comment'
     }
   ]
+})
+
+postSchema.virtual('user_data',{
+  ref:'User',
+  localField:'userData.userId',
+  foreignField:'_id',
+  justOne:true
 })
 
 module.exports = mongoose.model('Post', postSchema);

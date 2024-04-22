@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { FaHome, FaArrowRight, FaGamepad, FaFootballBall, FaChartLine, FaSun, FaTv, FaStar } from 'react-icons/fa';
 import { IoHelpCircle, IoNewspaperOutline, IoBriefcaseOutline, IoDocumentText } from 'react-icons/io5';
