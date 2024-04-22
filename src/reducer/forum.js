@@ -1,4 +1,4 @@
-const postReducer = async (state, action) => {
+const postReducer = (state, action) => {
   switch (action.type) {
     case 'fetch_posts': {
 

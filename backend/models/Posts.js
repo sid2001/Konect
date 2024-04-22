@@ -70,8 +70,12 @@ postSchema.virtual('user_data',{
 postSchema.statics.getAllPosts = async function(){
   try{
   const posts = await this.find({});
-  return posts.map(post=>{
-    const userData = post.populate('user_data');
+  // console.log('posts: ',posts);
+  const populatedPost = await Promise.all(
+    posts.map(async post=>{
+    // console.log('post from model map: ',post);
+    const userData =await post.populate('user_data');
+    // console.log('userData after populating: ',userData);
     const payload = {
       postId:post._id,
       userId:post.userData.userId,
@@ -82,9 +86,13 @@ postSchema.statics.getAllPosts = async function(){
         attachment : post.data.attachment
       },
       metaData:post.metaData
-    }
+    };
+    // console.log("post payload: ",payload);
     return payload;
-  })}
+  })
+  )
+  return populatedPost;
+}
   catch(err){
     console.error('Error while fetching posts: ',err);
   }

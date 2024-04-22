@@ -1,6 +1,6 @@
 import { createContext } from "react";
 
-const PostContext = createContext([ ]);
+const PostContext = createContext(null);
 const PostDispatchContext = createContext(null);
 const PostFilterContext = createContext('new');
 const ChangeFilterContext = createContext(null);

@@ -17,7 +17,10 @@ function Posts() {
         if(status!==200){
           throw new Error('Failed to fetch posts');
         }
-        const postList = data.map(post => new Post(post));
+        const postList = data.map(post => {
+          console.log('post from post list mapping: ',post)
+          return new Post(post)
+        });
         dispatchPosts({type:'fetch_all_posts_success',data:postList})
       }catch(err){
         dispatchPosts({type:'fetch_all_posts_failed',data:null})
@@ -28,7 +31,7 @@ function Posts() {
       console.log('fetching');
       // dispatchPosts({type:'fetch_all_posts_pending',data:null})
     }
-    console.log('posts inside use effect: ',postInfo.posts);
+    console.log('postInfo inside use: ',postInfo);
   },[postInfo.fetched,dispatchPosts,postInfo,postInfo.posts])
   if(postInfo.loading){
     return(
@@ -38,14 +41,14 @@ function Posts() {
     return(
       <div>Error</div>
     )
-  }else{
+  }else if(postInfo.fetched===true){
     console.log('posts inside fetched true: ',postInfo);
     return(
     <div id="post-container">
         {postInfo.posts?.map(post=>{
           console.log('mapping posts',post);
           return <PostCard key={post.postId} postObject={post}/>
-        })}
+        }).reverse()}
     </div>
   )
   }

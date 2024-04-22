@@ -35,6 +35,7 @@ const createPost = async (req,res,next)=>{
 const getAllPosts = async (req,res,next)=>{
   try{
     const posts = await Post.getAllPosts();
+    console.log('posts from controller: ',posts);
     res.status(200).json({type:'success',data:posts});
   }catch(err){
     next(err);
