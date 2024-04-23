@@ -72,7 +72,7 @@ const QuickAccess = () => {
   ];
 
   return (
-    <CommunityList>
+    <CommunityList className='quick-access'>
       <CommunityHeader>POPULAR COMMUNITIES</CommunityHeader>
       {communities.map((community, index) => (
         <CommunityItem key={index}>

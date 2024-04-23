@@ -8,7 +8,7 @@ const fs = require('fs');
 const url = require('url');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const wss = require('./wsServer');
-const authRoute = require('./routes/auth');
+const authRoute = require('./routes/auth.js');
 const cors = require('cors');
 const User = require('./models/Users');
 const ss = require('./middlewares/MediaSoup.js')
@@ -97,10 +97,10 @@ app.use('/forum',forumRoute);
 app.use('/test',testRoute);
 app.use(authRoute);
 app.use('/user/',userRoute);
-app.use('/',(req,res,next)=>{
-  res.json({'message':'hello'});
-  next();
-})
+// app.use('/',(req,res,next)=>{
+//   res.json({'message':'hello'});
+//   next();
+// })
 
 app.use((err,req,res,next)=>{
   console.log('inside error middleware.');

@@ -4,6 +4,7 @@ import {getAllPosts} from '/src/utils/forum.js';
 import '/src/styles/posts.css';
 import { useContext, useEffect } from 'react';
 import {PostContext,PostDispatchContext} from '/src/components/Context/ForumContext.js';
+import logo from '/src/assets/logo4.png';
 function Posts() {
   const postInfo = useContext(PostContext);
   // const {posts,loading,error,fetched} = postInfo;
@@ -35,7 +36,11 @@ function Posts() {
   },[postInfo.fetched,dispatchPosts,postInfo,postInfo.posts])
   if(postInfo.loading){
     return(
-      <div>Loading</div>
+      <div id='post-container'>
+        {/* <div id='loader'> */}
+          <img id='loader' src={logo} alt="" />
+        {/* </div> */}
+      </div>
     )
   }else if(postInfo.error){
     return(

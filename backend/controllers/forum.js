@@ -1,5 +1,5 @@
 const Post =  require('../models/Posts.js');
-const multer = require('multer');
+const multer = require('multer')();
 const fs = require('fs');
 const createPost = async (req,res,next)=>{
   const title = req.body.title;
@@ -25,7 +25,16 @@ const createPost = async (req,res,next)=>{
       }
     });
     await post.save()
-
+    // let chunk = 0;
+    // req.on('data',(chunks)=>{
+    //   console.log('chunk: ',chunk++);
+    //   console.log(req.headers)
+      // console.log(chunks.toString());
+      // const upload = multer.none()
+    // })
+    // req.on('end',()=>{
+    //   console.log('end');
+    // })
     res.status(202).json({type:"success",data:'crated successfully'});
   }catch(err){
     next(err,'Error while creating post');

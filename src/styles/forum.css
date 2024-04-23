@@ -23,3 +23,12 @@
 ::-webkit-scrollbar{
   width: 0px;
 }
+
+@media only screen and (max-width:900px){
+  div.dashboard{
+    display: none;
+  }
+  div.quick-access{
+    display: none;
+  }
+}

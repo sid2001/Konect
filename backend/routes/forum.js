@@ -4,6 +4,7 @@ const {userAuth} = require('../middlewares/Auth.js');
 const upload = require('multer')();
 
 router.post('/createPost',userAuth,upload.none(),createPost);
+// router.post('/createPost',userAuth,createPost);
 
 router.get('/getAllPosts',getAllPosts);
 

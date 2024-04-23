@@ -4,6 +4,7 @@
   grid-template-columns: auto auto auto;
   width: 100%;
   height:7% ;
+  /* padding-top: 3px; */
   border-bottom: solid 1px rgba(161, 158, 158, 0.659) ;
 }
 #navbar-isForm{

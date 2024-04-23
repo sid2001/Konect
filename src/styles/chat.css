@@ -9,7 +9,7 @@ button.call-btn{
   background: radial-gradient(circle, rgb(0, 0, 0) 0%, rgb(42, 42, 43) 10%, rgb(23, 23, 23) 40%, rgba(4, 4, 7, 0.916) 96%);
   position: relative;
   display: flex;
-  height: auto;
+  height: 60%;
   width: 80vw;
   flex-direction: row;
   /* border: white solid 1px; */
@@ -167,6 +167,7 @@ button.call-btn{
   background-color: rgba(255, 255, 255, 0.111);
   border-radius: 20px;
   padding: 7px;
+  color: white;
   font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 .input-area>textarea::placeholder{

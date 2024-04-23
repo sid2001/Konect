@@ -2,9 +2,14 @@ import threeDots from "/src/assets/three-dots.png";
 import likeIcon from "/src/assets/like-icon.png"
 import commentIcon from "/src/assets/comment-icon.png";
 import shareIcon from "/src/assets/share-icon.png";
+import PropTypes from 'prop-types';
 import "/src/styles/postcard.css";
+import { useState } from "react";
 function PostCard({postObject}) {
-
+  const [liked,setLiked] = useState(false);
+  const likeHandler = ()=>{
+    // postObject
+  }
   return(
     <div id="postcard-container">
       <div className="post-header-wrapper">
@@ -29,7 +34,7 @@ function PostCard({postObject}) {
         </div>
         <div className="post-photo">
           {/* <div className="post-photo-foreground"> */}
-            <img src={postObject.data.attachment.images[0]} alt="" />
+           {postObject.data.attachment.images.length>0?<img src={postObject.data.attachment.images[0]} alt="" />:''}
           {/* </div> */}
           {/* <img className="post-photo-background" src={"/src/assets/dog.svg"} alt="" /> */}
         </div>
@@ -49,6 +54,10 @@ function PostCard({postObject}) {
       </div>
     </div>
   )
+}
+
+PostCard.propTypes ={
+  postObject :PropTypes.object
 }
 
 export default PostCard;

@@ -1,8 +1,7 @@
 #forum-header{
-  /* position: sticky; */
   /* z-index: 2; */
   display: flex;
-  width: 65%;
+  width:65%;
   height: 40px;
   flex-direction: row;
   padding: 2px 20px 2px 10px;

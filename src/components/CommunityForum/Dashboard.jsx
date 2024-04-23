@@ -41,14 +41,14 @@ const SidebarDivider = styled.hr`
 `;
 
 const Dashboard = () => {
-  const [showTopics, setShowTopics] = useState(false);
-  const [showResources, setShowResources] = useState(false);
+  // const [showTopics, setShowTopics] = useState(false);
+  // const [showResources, setShowResources] = useState(false);
 
   // const toggleTopics = () => setShowTopics(!showTopics);
   // const toggleResources = () => setShowResources(!showResources);
 
   return (
-    <SidebarContainer>
+    <SidebarContainer className='dashboard'>
       {/* <div id="dashboard-wrapper"> */}
         
       <SidebarItem>
