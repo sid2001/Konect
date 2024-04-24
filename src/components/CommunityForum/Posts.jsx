@@ -44,7 +44,11 @@ function Posts() {
     )
   }else if(postInfo.error){
     return(
-      <div>Error</div>
+      <div id='post-container'>
+        {/* <div id='loader'> */}
+          <img id='post-error' src={logo} alt="" />
+        {/* </div> */}
+      </div>
     )
   }else if(postInfo.fetched===true){
     console.log('posts inside fetched true: ',postInfo);

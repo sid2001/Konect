@@ -20,7 +20,7 @@ const createPost = async (postData) => {
       'Content-Type': 'multipart/form-data',
       'X-Auth-Type': 'session',
     },
-    onUploadProgress
+    onUploadProgress,
   }
   return axios(config)
   .then(res=>{

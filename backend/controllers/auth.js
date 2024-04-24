@@ -130,3 +130,8 @@ exports.postRegister = (req,res,next)=>{
     res.status(409).send('Conflicting Credentials!!');
   })
 }
+
+exports.postLogOut = async function(req,res,next) {
+  await req.session.destroy();
+  res.status(200).json(JSON.stringify({type:'logout',data:"logout successful"}));
+}

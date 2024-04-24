@@ -30,7 +30,7 @@ const userAuth = (req,res,next)=>{
       break;
     }
     default :{
-      res.status('401').json({'message':'Invalid Auth type or missing'});
+      res.status(401).json({'message':'Invalid Auth type or missing'});
     }
   }
  

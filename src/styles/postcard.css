@@ -61,26 +61,43 @@
   font-size: small;
 }
 .post-content{
+  position: relative;
+  z-index: 1;
   padding: 10px 0px 10px 0px;
 }
 .post-photo{
   display: flex;
+  position: relative;
   border-radius: 20px;
   /* max-width: 50%; */
   /* padding: 1px 0px; */
   overflow: hidden;
+  z-index: 1;
   justify-content: center;
+  /* background-color: transparent; */
+  /* overflow-y: hidden; */
+  /* background-color: #212525; */
 }
 
 .post-photo:hover{
   background-color: rgba(54, 54, 55, 0.436);
+  
 }
-.post-photo img{
+/* #post-background-photo {
+  position: absolute;
+  width: 100%;
+  z-index: -1 ;
+} */
+.post-photo #post-foreground-photo{
   height: 40vh;
   max-height: 90%;
   max-width: 100%;
+  z-index: 1;
+  /* border-radius: 5px; */
   object-fit: contain;
+  
 }
+
 .post-header-right{
   position: relative;
   display: flex;

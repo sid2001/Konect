@@ -33,8 +33,22 @@ function PostCard({postObject}) {
           {postObject.data.description}
         </div>
         <div className="post-photo">
+          <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundImage: `url(${postObject.data.attachment.images[0]})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            filter: 'blur(90px)', // Adjust the blur radius as needed
+            zIndex: 0, // Ensure the background is behind the image
+          }}
+        />
           {/* <div className="post-photo-foreground"> */}
-           {postObject.data.attachment.images.length>0?<img src={postObject.data.attachment.images[0]} alt="" />:''}
+           {postObject.data.attachment.images.length>0?<><img id='post-foreground-photo'src={postObject.data.attachment.images[0]} alt="" /></>:''}
           {/* </div> */}
           {/* <img className="post-photo-background" src={"/src/assets/dog.svg"} alt="" /> */}
         </div>

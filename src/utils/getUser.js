@@ -55,4 +55,18 @@ export const register = async (data)=>{
     return res;
   })
 }
+
+const logOut = async ()=>{
+  const config = {
+    method:'post',
+    url:'/logout',
+    withCredentials:true,
+
+    headers:{"Content-Type":'application/json','Access-Control-Allow-Origin':'https://127.0.0.1:5173/',"X-Auth-Type":"session"}
+  }
+  return axios(config).then((res)=>{
+    return {stat:res.status,data:res.data}
+  })
+}
+export {logOut};
 export default getUser;
