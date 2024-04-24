@@ -7,13 +7,24 @@ import "/src/styles/postcard.css";
 import { useState } from "react";
 function PostCard({postObject}) {
   const [liked,setLiked] = useState(false);
-  const likeHandler = ()=>{
-    // postObject
+  const [viewPostPhoto,setViewPostPhoto] = useState(false);
+  const viewPostPhotoHandler = (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    setViewPostPhoto((s)=>{
+      return !s
+    });
+    // e.target.className = "view-post-photo";
+    console.log('Clicked photo');
   }
   return(
     <div id="postcard-container">
       <div className="post-header-wrapper">
         <div className="post-header-left">
+          {viewPostPhoto!==false?
+          <div onClick={viewPostPhotoHandler} id="view-post-photo">
+            <img src={postObject.data.attachment.images[0]} alt="" />
+          </div>:null}
           <div className="post-pfp">
             <img src="/src/assets/default-profile.png" alt="" />
           </div>
@@ -32,8 +43,8 @@ function PostCard({postObject}) {
         <div className="post-content">
           {postObject.data.description}
         </div>
-        <div className="post-photo">
-          <div
+        <div className="post-photo"  onClick={viewPostPhotoHandler} >
+          <div 
           style={{
             position: 'absolute',
             top: 0,
@@ -48,7 +59,7 @@ function PostCard({postObject}) {
           }}
         />
           {/* <div className="post-photo-foreground"> */}
-           {postObject.data.attachment.images.length>0?<><img id='post-foreground-photo'src={postObject.data.attachment.images[0]} alt="" /></>:''}
+           {postObject.data.attachment.images.length>0?<img id='post-foreground-photo'src={postObject.data.attachment.images[0]} alt="" />:''}
           {/* </div> */}
           {/* <img className="post-photo-background" src={"/src/assets/dog.svg"} alt="" /> */}
         </div>
