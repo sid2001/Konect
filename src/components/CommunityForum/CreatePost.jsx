@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { FiUser, FiX } from 'react-icons/fi';
 import { createPost } from '../../utils/forum.js';
 import { Store as store } from 'react-notifications-component';
+import loader from '/src/assets/logo4.png';
 
 const slideInFromRight = keyframes`
   0% {
@@ -17,7 +18,20 @@ const slideInFromRight = keyframes`
     transform: scale(1);
   }
 `;
-
+const loadingAnimation = keyframes`
+  0% {
+    transform: rotate(0deg);
+    filter:invert(100%);
+  }
+  50% {
+    transform: rotate(180deg);
+    filter:invert(0%);
+  }
+  100% {
+    transform: rotate(360deg);
+    filter:invert(100%);
+  }
+}`;
 const Overlay = styled.div`
   position: fixed;
   z-index: 2;
@@ -146,7 +160,24 @@ const SubmitButton = styled.button`
     background-color: rgba(63, 62, 62, 0.458);
   }
 `;
-
+const Loader = styled.div`
+  position:absolute;
+  display:flex;
+  width: 100%;
+  height: 100%;
+  top:0px;
+  left:0px;
+  z-index:1;
+  backdrop-filter: blur(2px);
+  justify-items:center;
+  justify-content:center;
+  img{
+    animation: ${loadingAnimation} 2s linear infinite;
+    width: 10%;
+    object-fit:contain;
+  }
+  
+`
 const CancelButton = styled.button`
   background-color: transparent;
   color: rgb(235, 235, 235);
@@ -168,8 +199,10 @@ const CreatePostForm = ({setCreatePost }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [images, setImages] = useState([]);
+  const [imageUrls, setImageUrls] = useState([]);
   const fileInputRef = useRef(null); 
-  const {user} = useContext(UserContext);
+  const [isUploading, setIsUploading] = useState(false);
+  // const {user} = useContext(UserContext);
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
   };
@@ -182,19 +215,26 @@ const CreatePostForm = ({setCreatePost }) => {
     const files = Array.from(fileInputRef.current.files);
     // Create a new array to store the image files
   const imageData = [];
-
   // Iterate over each file
   files.forEach((file) => {
     const reader = new FileReader();
     reader.onload = (event) => {
       // Add the image data to the array
+      console.log('file readear onload event: ',event);
       imageData.push(event.target.result);
+      // const uri = encodeURIComponent(event.target.result);
+      // console.log('uri: ',uri);
       // If all files have been processed, set the state with the new array of image data
       if (imageData.length === files.length) {
-        setImages([...images, ...imageData]);
+        setImageUrls((i)=>{
+          return [...i, ...imageData];
+        });
       }
     };
     console.log('file: ',file);
+    setImages((i)=>{
+      return [...i, file];
+    })
     // Read the file as a data URL (base64-encoded string)
     reader.readAsDataURL(file);
   });
@@ -215,12 +255,16 @@ const CreatePostForm = ({setCreatePost }) => {
     const postData = {
       title,
       description,
-      images,
+      images
     };
+    setIsUploading(true);
     console.log(postData);
     createPost(postData)
     .then(res=>{
-      if(res.status===202){ 
+      setIsUploading(false);
+      console.log('response status: ',res);
+      if(res.data==='success'){ 
+        // console.log('response text from createpost:',res)
         store.addNotification({
           title: "Success!",
           message: "Post created successfully!",
@@ -242,6 +286,7 @@ const CreatePostForm = ({setCreatePost }) => {
       setImages([]); 
       setCreatePost(false);
     }).catch(err=>{
+      setIsUploading(false);
       console.log(err);
       store.addNotification({
           title: "Error",
@@ -267,6 +312,9 @@ const CreatePostForm = ({setCreatePost }) => {
   return (
     <Overlay>
       <FormContainer>
+        {isUploading?<Loader>
+          <img src={loader} alt="loader" />
+        </Loader>:null}
         <FormHeader>
           <UserIcon />
           <FormTitle>Create a post</FormTitle>
@@ -288,7 +336,7 @@ const CreatePostForm = ({setCreatePost }) => {
             rows={15}
           />
           <ImageContainer>
-            {images.map((imageUrl, index) => (
+            {imageUrls.map((imageUrl, index) => (
               <div key={index} style={{ position: 'relative' }}>
                 <ImagePreview src={imageUrl} />
                 <RemoveImageButton onClick={() => handleRemoveImage(index)}>
@@ -300,7 +348,7 @@ const CreatePostForm = ({setCreatePost }) => {
             <input
               id="image-upload"
               type="file"
-              accept="image/*"
+              accept="image/jpg, image/jpeg, image/png"
               style={{ display: 'none' }}
               onChange={handleImageUpload}
               ref={fileInputRef}

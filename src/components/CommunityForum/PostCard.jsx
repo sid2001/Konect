@@ -6,8 +6,9 @@ import PropTypes from 'prop-types';
 import "/src/styles/postcard.css";
 import { useState } from "react";
 function PostCard({postObject}) {
-  const [liked,setLiked] = useState(false);
+  // const [liked,setLiked] = useState(false);
   const [viewPostPhoto,setViewPostPhoto] = useState(false);
+
   const viewPostPhotoHandler = (e)=>{
     e.preventDefault();
     e.stopPropagation();
@@ -58,10 +59,7 @@ function PostCard({postObject}) {
             zIndex: 0, // Ensure the background is behind the image
           }}
         />
-          {/* <div className="post-photo-foreground"> */}
            {postObject.data.attachment.images.length>0?<img id='post-foreground-photo'src={postObject.data.attachment.images[0]} alt="" />:''}
-          {/* </div> */}
-          {/* <img className="post-photo-background" src={"/src/assets/dog.svg"} alt="" /> */}
         </div>
       </div>
       <div className="post-footer-wrapper">

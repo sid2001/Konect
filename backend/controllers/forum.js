@@ -1,57 +1,93 @@
+/* eslint-disable no-undef */
 const Post =  require('../models/Posts.js');
+const {v4:uuidv4} = require('uuid');
+const {ObjectId} = require('mongodb');
 const multipart = require('parse-multipart-data');
+const {uploadObject} = require('../services/spaces.js');
+require('dotenv').config();
 
-function parseMultipartString(multipartString, boundary) {
-  const parts = multipartString.split("--"+boundary);
-  if(parts[0]===''){
-    parts.shift();
-  }
-  parts.forEach(element => {
-    console.log(element);
-    console.log('--------------------');
-  });
-}
-const createPost = async (req,res,next)=>{
-  const title = req.body.title;
-  const description = req.body.description;
-  const images = req.body.images;
-  const userId = req.userId;
-  const username = req.username;
-  // console.log(req.body.images[0]);
-  // console.log(req.body);
-  // document handling still remaining
-  try{
-    const post = new Post({
-      userData:{
-        userId,
-        username
-      },
-      data:{
-        title,
-        description,
-        attachment:{
-          images
+const handlePostUpload = async (data,postId)=>{
+  var payload = {
+    title:'',
+    description:'',
+    attachment:{images:[]}
+  };
+  var images = 0;
+  for(const element of data) {
+    switch(element.name){
+      case('title'): {
+        payload.title = element.data.toString(); 
+        break;
+      }
+      case('description'): {
+        payload.description = element.data.toString(); 
+        break;
+      }
+      case('images[]'): {
+        console.log(data);
+        const imageType = element.type.split('/')[1];
+        const params = {
+          Bucket: 'konect',
+          Key: `PostImages/${postId}/${++images}.${imageType}`,
+          Body: element.data ,
+          ACL:'public-read',
+          ContentType: `${element.type}`
+        }
+        try{
+          var dat = await uploadObject(params);
+          console.log('data from bucket: ',dat);
+          const imageLink = `${process.env.SPACES_IMAGE_BASE_ADDR}/${postId}/${images}.${imageType}`;
+          payload.attachment.images.push(imageLink);
+        }catch(err){
+          console.log(err);
+          return {err:err,payload:null};
         }
       }
-    });
-    await post.save()
-    // let chunk = 0;
-    // let chunkData = '';
-    // // const receivedBuffer = [];
-    // console.log('headers:',req.headers)
-    // const boundary = req.headers['content-type'].split(';')[1].split('=')[1];
-    // req.on('data',(chunks)=>{
-    //   console.log('chunk:',chunk++);
-    //   // console.log(chunks.toString());
-    //   // receivedBuffer.push(chunks);
-    //   chunkData = chunkData + chunks.toString();
-    // })
-    // req.on('end',()=>{
-    //   console.log('end');
-    //   console.log('chunk data:\n',chunkData);
-    //   parseMultipartString(chunkData,boundary);
-    // })
-    res.status(202).json({type:"success",data:'crated successfully'});
+    }
+  }
+  return {err:'none',payload:payload}
+}
+const createPost = async (req,res,next)=>{
+  const userId = req.userId;
+  const postId = uuidv4();
+  const username = req.username;
+
+  // document handling still remaining
+  try{
+    let chunk = 0;
+    console.log('headers:',req.headers)
+    var buf = Buffer.alloc(0);
+    res.setHeader('Content-Type','text/event-stream');//tell the browser that the response is an event stream
+    // res.write('data: '+ "hello!\n\n");//this has to be in the first line \n\n signals 
+    const boundary = req.headers['content-type'].split(';')[1].split('=')[1];
+
+    req.on('data',(chunks)=>{
+      console.log('chunk:',chunk++);
+      let length = buf.length + chunks.length;
+      buf = Buffer.concat([buf,chunks],length);
+    })
+
+    req.on('end',async ()=>{
+      const parts = multipart.parse(buf, boundary);
+      console.log(parts);
+      const {err,payload} = await handlePostUpload(parts,postId);
+      if(err!=='none'){
+        res.write('failed');
+      }else{
+        const post = new Post({
+          _id: new ObjectId(),
+          userData:{
+            userId,
+            username
+          },
+          data:payload,
+        });
+        await post.save();
+        res.write('success');
+      }
+      console.log('end');
+      res.end();
+    })
   }catch(err){
     next(err,'Error while creating post');
   }
