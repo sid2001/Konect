@@ -79,6 +79,7 @@ button.call-btn{
 .ChatContainer{
   position: relative;
   height: 80%;
+  max-height: 70vh;
   display: flex;
   border-radius: 10px;
   overflow-y: scroll;

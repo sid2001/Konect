@@ -16,6 +16,7 @@ const InputBox = ({dispatchSelectedUser,selectedUserState,user,ws})=>{
   }
   // console.log(message);
   const sendMessageHandler = ()=>{
+    if(message.trim().length===0) return;
     const payload = {
       type:'msg',
       sender:user.username,

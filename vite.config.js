@@ -9,13 +9,13 @@ export default defineConfig({
     name: 'configure-response-headers',
     configureServer: server => {
       server.middlewares.use((_req, res, next) => {
-        res.setHeader('Access-Control-Allow-Origin',"http://127.0.0.1:5173");
+        res.setHeader('Access-Control-Allow-Origin',"http://192.168.87.108:8081");
         next();
       });
-    }
+    } 
   }],
-  server:{host:"127.0.0.1",cors:true,origin:"http://127.0.0.1:5173",
-          headers:{'Access-Control-Allow-Origin':"http://127.0.0.1:5173"},
+  server:{host:"192.168.87.108",cors:true,origin:"http://192.168.87.108:5173",
+          headers:{'Access-Control-Allow-Origin':"http://192.168.87.108:8081"},
           // https:{cert:fs.readFileSync('./backend/cert.pem'),key:fs.readFileSync('./backend/key.pem')}
         },
   

@@ -11,7 +11,7 @@ const mediaCodecs =
   },
   {
     kind       : "video",
-    mimeType   : "video/H264",
+    mimeType   : "video/VP8",
     clockRate  : 90000,
     parameters :
     {
@@ -26,6 +26,7 @@ const tranportOptions = {
     {
       ip: '0.0.0.0',
       announcedIp:process.env.ANNOUNCED_IP
+      // announcedIp:'0.0.0.0'
     }
   ],
   enableUDP: true,

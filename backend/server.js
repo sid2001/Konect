@@ -25,6 +25,12 @@ const storeOptions = new MongoDBStore({
   databaseName:'technic',
   collection:'user-sessions'
 });
+app.use(cors({
+  origin:process.env.ALLOW_ORIGIN,
+  credentials:true,
+  // optionsSuccessStatus: 200
+
+}));
 const googleAuthClient = new OAuth2Client(
   process.env.CLIENT_ID,
   process.env.CLIENT_SECRET,
@@ -50,10 +56,6 @@ const googleAuthClient = new OAuth2Client(
   req.CLIENT_ID = process.env.CLIENT_ID;
   next();
 })
-app.use(cors({
-  origin:process.env.ALLOW_ORIGIN,
-  credentials:true
-}));
 app.use(sessionHandler);
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));

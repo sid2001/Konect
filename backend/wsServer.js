@@ -1,11 +1,10 @@
 /* eslint-disable no-undef */
 const ws = require('ws');
 const clientAuth = require('./utilities/scripts/sessionAuth');
-const heartbeat = (ws) => {
-  // console.log('heartbeat');
-  // console.log(this);
-  ws.isAlive = true;
-}
+// const heartbeat = (ws) => {
+//   ws.isAlive = true;
+//   console.log('heartbeat');
+// }
 const clients = new Map();
 
 function messageHandler(dat){
@@ -86,74 +85,72 @@ const verifyClient = async (info,cb)=>{
 }
 
 
-// const WebSocketServe = (request,socket,head,httpsServer,sessionHandler)=>{
 
-  // sessionHandle = sessionHandler;
-  const wss = new ws.WebSocketServer({
-    verifyClient: verifyClient,
-    // server:httpsServer,
-    noServer:true,
-    path:'/chat',
-    clientTracking:true,
-  });
-const pingHandler = () =>{
-  const interval = setInterval(()=>{
-    if(clients.size>0)
-      // console.log(clients.size);
-    clients.forEach((sock)=>{
-      // console.log('pinging');
-      if(sock.isAlive === false){
-        // sock.emit('close');//why not emitting
-        // console.log(sock)
-        return sock.terminate();
-    }
 
-      sock.isAlive = false;
-      sock.ping('pinging',()=>{sock.send(JSON.stringify({type:'ping',data:''}))});
+var wss = new ws.WebSocketServer({
+  verifyClient: verifyClient,
+  // server:httpsServer,
+  noServer:true,
+  path:'/chat',
+  clientTracking:true,
+});
+// const pingHandler = () =>{
+//   const interval = setInterval(()=>{
+//     if(clients.size>0)
+//     clients.forEach((sock)=>{
+//       if(sock.isAlive === false){
+
+//         return sock.terminate();
+//     }
+
+//       sock.isAlive = false;
+//       sock.ping('pinging',()=>{sock.send(JSON.stringify({type:'ping',data:''}))});
       
-    });
-  },3000)
-  return interval;
-}
-  
-  wss.on('close',()=>{
-    clearInterval(wss.pinger);
-    console.log('WebSocket server closed.');
-  })
-  // wss.on('listening',(s)=>{
-  //   console.log('listening event',s);
-  //   cb();
-  //  // implement someting in future
-  // })
-  wss.on('error',console.error);
-  wss.on('headers',(header,req)=>{
-    console.log(header);
-    //will implement something in future
-  })
-  wss.on('connection',(ws,request)=>{
-
-    console.log('ws connection received!!')
-    wss.pinger = pingHandler();
-    ws.isAlive = true;
-    ws.on('error',(e)=>{
-      console.error('Error in ws: ',e);
-    });
-    ws.on('close',(code)=>{
-      clients.delete(ws.username);
-      console.log('closed socket with code: ',code);
-    })
-    ws.on('pong',()=>{
-        heartbeat(ws);
-      }
-    );
-    ws.on('message',messageHandler)
-    //  function (m){
-      // const json = JSON.parse(m);
-      // messageHandler(this,json,ws);
-    // });
-    ws.send(JSON.stringify({type:'ack',data:'acknowledged!!'}))
-    // cb();
-  })
+//     });
+//   },3000)
+//   return interval;
 // }
+  
+wss.on('close',()=>{
+  // clearInterval(wss.pinger);
+  console.log('WebSocket server closed.');
+})
 
+wss.on('error',(err)=>{
+  console.log('server closed unexpected: ',err);
+});
+wss.on('headers',(header,req)=>{
+  console.log(header);
+})
+wss.on('connection',(ws,request)=>{
+  console.log('ws connection received!!')
+  // wss.pinger = pingHandler();
+  ws.isAlive = true;
+  ws.on('error',(e)=>{
+    console.error('Error in ws: ',e);
+  });
+  ws.on('close',(code)=>{
+    clients.delete(ws.username);
+    console.log('closed socket with code: ',code);
+    if(code===1006||code==='1006')
+      restartServer();
+  })
+  // ws.on('pong',()=>{
+  //     heartbeat(ws);
+  //   }
+  // );
+  ws.on('message',messageHandler)
+  ws.send(JSON.stringify({type:'ack',data:'acknowledged!!'}))
+})
+
+function restartServer(){
+  console.log('restarting ws server');
+wss = new ws.WebSocketServer({
+  verifyClient: verifyClient,
+  // server:httpsServer,
+  noServer:true,
+  path:'/chat',
+  clientTracking:true,
+});
+}
 module.exports = wss;
