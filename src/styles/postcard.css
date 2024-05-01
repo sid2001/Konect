@@ -1,6 +1,7 @@
 #postcard-container{
   position: relative;
   width: 80%;
+  max-height:900px;
   display: flex;
   border: 1px solid rgba(3, 62, 66, 0.329);
   flex-direction: column;
@@ -165,3 +166,9 @@
 .post-icons:hover{
   background-color:rgba(59, 59, 81, 0.653)
 }
+@media only screen and (max-width:900px){
+  #postcard-container{
+  	width:90%;
+  }
+}
+

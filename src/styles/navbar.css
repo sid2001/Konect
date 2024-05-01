@@ -95,3 +95,8 @@ img.name{
   justify-content: end;
   column-gap: 20px;
 }
+@media only screen and (max-width:900px){
+  img.logo.name{
+	  display:none;
+  }
+}
