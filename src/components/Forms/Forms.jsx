@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import '/src/styles/forms.css';
 import Register from "./Register";
-import Login from "./login";
+import Login from "./Login";
 import Navbar from "../NavBar/Navbar";
 import { useLocation, useParams,useNavigate } from "react-router-dom";
 import { googleLogout,useGoogleLogin } from "@react-oauth/google";

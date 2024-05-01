@@ -19,7 +19,7 @@ body{
   border-radius:20px;
   max-width: 500px;
   overflow: hidden;
-
+ /* max-height:50vh;*/
   /* opacity: 0.5; */
 }
 ::placeholder{
@@ -186,4 +186,10 @@ label{
 }
 .google-icon{
   width: 40px;
+}
+@media only screen and (max-width:900px){
+  #form-container{
+  	max-height:60vh;
+	overflow-y:scroll;
+  }
 }
