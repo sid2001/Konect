@@ -23,5 +23,8 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+# .gitignore
 key.txt.pub
 pm2.config.cjs
+vite.config.js

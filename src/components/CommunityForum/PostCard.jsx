@@ -3,12 +3,17 @@ import likeIcon from "/src/assets/like-icon.png"
 import commentIcon from "/src/assets/comment-icon.png";
 import shareIcon from "/src/assets/share-icon.png";
 import PropTypes from 'prop-types';
+import { UserContext } from "/src/components/Context/userContext.js";
+import { likePost } from "/src/utils/forum.js";
+import {PostDispatchContext} from "/src/components/Context/ForumContext.js";
 import "/src/styles/postcard.css";
-import { useState } from "react";
+import {Store as store} from 'react-notifications-component'
+import { useContext, useState } from "react";
 function PostCard({postObject}) {
-  // const [liked,setLiked] = useState(false);
+  const user = useContext(UserContext);
+  const [liked,setLiked] = useState(false);
   const [viewPostPhoto,setViewPostPhoto] = useState(false);
-
+  const dispatchPosts = useContext(PostDispatchContext);
   const viewPostPhotoHandler = (e)=>{
     e.preventDefault();
     e.stopPropagation();
@@ -17,6 +22,52 @@ function PostCard({postObject}) {
     });
     // e.target.className = "view-post-photo";
     console.log('Clicked photo');
+  }
+
+  const likeHandler = async (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    // console.log('user: ',user);
+    if(user.user.isLoggedIn===false){
+      store.addNotification({
+        title: 'Guest user',
+        message: 'Login to like posts',
+        type: 'warning',
+        insert: 'top',
+        container: 'top-left',
+        animationIn: ["animated", "fadeIn"],
+        animationOut: ["animated", "fadeOut"],
+        dismiss: {
+          duration: 2000,
+          onScreen: true
+        }
+        });
+      return;
+    }else{
+      // console.log('postObject: ',postObject.postId);
+      const res = await likePost(postObject.postId);
+      if(res.status===200){
+        setLiked(()=>{
+          if(res.data==='1') return true;
+          else return false
+        });
+        dispatchPosts({type: 'like_post',data:res.data,postId:postObject.postId});
+      }else{
+        store.addNotification({
+        title: 'Error',
+        message: res.data,
+        type: 'danger',
+        insert: 'top',
+        container: 'top-left',
+        animationIn: ["animated", "fadeIn"],
+        animationOut: ["animated", "fadeOut"],
+        dismiss: {
+          duration: 2000,
+          onScreen: true
+        }
+        });
+      }
+    }
   }
   return(
     <div id="postcard-container">
@@ -63,7 +114,7 @@ function PostCard({postObject}) {
         </div>
       </div>
       <div className="post-footer-wrapper">
-        <div className="post-icons" id="post-likes">
+        <div className="post-icons" id={`post-likes${liked?'-liked':''}`} onClick={likeHandler}>
             <img src={likeIcon} alt="" />
             {postObject.metaData.likeCount}
         </div>

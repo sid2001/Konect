@@ -103,5 +103,29 @@ const getAllPosts = async (req,res,next)=>{
   }
 }
 
+const likePost = async (req,res)=>{
+  try{
+    //separate like and dislike logic later to prevent non-idempotency
+    const postId = req.params['postId'];
+    const post = await Post.findOne({_id:postId});
+    if(post.metaData.likedBy.includes(req.user._id)){
+      post.metaData.likeCount = post.metaData.likeCount - 1;
+      post.metaData.likedBy = post.metaData.likedBy.filter((id)=>id.toString()!==req.user._id.toString());
+      await post.save(); 
+      console.log('like removed by: ',req.user._id);
+      res.status(200).json({type:'success',data:'0'});
+    }else{
+      post.metaData.likeCount = post.metaData.likeCount + 1;
+      post.metaData.likedBy.push(req.user._id);
+      await post.save();
+      console.log('like added by: ',req.user._id);
+      res.status(200).json({type:'success',data:'1'});
+    }
+  }catch(err){
+    res.status(400).json({type:'error',data:"Can't perform the action. Try again later."});
+  }
+}
+
+module.exports.likePost = likePost;
 module.exports.getAllPosts = getAllPosts;
 module.exports.createPost = createPost;

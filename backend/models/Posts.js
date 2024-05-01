@@ -51,13 +51,20 @@ const postSchema = new Schema({
       type:Number,
       default:0
     },
+    likedBy:[
+      {
+        type:Schema.ObjectId,
+        ref:'User'
+      }
+    ]
   },
   comments:[
     {
       type:Schema.ObjectId,
       ref:'Comment'
     }
-  ]
+  ],
+  
 })
 
 postSchema.virtual('user_data',{

@@ -159,6 +159,9 @@
   transition: 0.2s;
   box-shadow: 0px 0px 2px 1px rgba(251, 77, 140, 0.446);
 }
+#post-likes-liked{
+  background-color: rgba(252, 58, 87, 0.844);
+}
 .post-icons img{
   width: 20px;
   object-fit: contain;

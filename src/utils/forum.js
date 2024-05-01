@@ -58,5 +58,20 @@ const getAllPosts = async () => {
     return {status:res.status,data:res.data.data};
   })
 }
-
-export { createPost,getAllPosts };
+const likePost = async (data) => {
+  console.log('data: ',data);
+  const config = {
+    method: 'put',
+    url: '/forum/likePost/'+data,
+    withCredentials: true,
+    headers: {
+      'X-Auth-Type': 'session',
+    }
+  }
+  return axios(config)
+  .then(res=>{
+    console.debug('response from likePost: ', res);
+    return {status:res.status,data:res.data.data};
+  })
+}
+export { createPost,getAllPosts,likePost };

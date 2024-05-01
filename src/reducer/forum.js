@@ -26,6 +26,25 @@ const postReducer = (state, action) => {
         {...state,error:true,loading:false,fetched:true}
       )
     }
+    case 'like_post':{
+      const post = state.posts;
+      if(action.data==='1'){
+        for(let i=0;i<post.length;i++){
+          if(post[i].postId===action.postId){
+            post[i].metaData.likeCount=post[i].metaData.likeCount+1;
+          }
+        }
+      }else if(action.data==='0'){
+        for(let i=0;i<post.length;i++){
+          if(post[i].postId===action.postId){
+            post[i].metaData.likeCount=post[i].metaData.likeCount-1;
+          }
+        }
+      }
+      return(
+        {...state,posts:post}
+      )
+    }
     default: {
       console.log("Invalid post action")
     }

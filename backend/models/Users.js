@@ -168,7 +168,13 @@ const userSchema = new Schema({
         type:mongoose.ObjectId,
         ref:'Chat'
       }
+    },
+  likedPosts:[
+    {
+      type:mongoose.ObjectId,
+      ref:'Post'
     }
+  ]
 })
 
 userSchema.methods.getContacts = function(){
