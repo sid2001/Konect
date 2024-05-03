@@ -18,14 +18,21 @@ function PostCard({postObject}) {
   const [viewPostPhoto,setViewPostPhoto] = useState(false);
   const dispatchPosts = useContext(PostDispatchContext);
   const [imageLoaded,setImageLoaded] = useState(false);
+  const [hasImage,setHasImage] = useState(false);
   const [image,setImage] = useState(null);
   useEffect(()=>{
     const img = new Image()
+    if(postObject.data.attachment.images.length===0){
+      setHasImage(false);
+      return;
+    }else{
+      setHasImage(true);
+    }
     img.onload = async ()=>{
       
       // console.log('loaded',postObject.data.title);
       try{
-        //ensuring first image data is loaded before giving 
+        //ensuring first image data is loaded before setting image to img.src
         const data = await fetch(img.src);
         const blob = await data.blob();
         const reader = new FileReader();
@@ -38,9 +45,11 @@ function PostCard({postObject}) {
         // console.log(URL.createObjectURL(blob));
         // setImage(URL.createObjectURL(blob));
         // setImageLoaded(true);
-      }catch{
-        setImage(img.src);
-        setImageLoaded(true);
+      }catch(err){
+        if(img.src){
+          setImage(img.src);
+          setImageLoaded(true);
+        }
       }
       // setImage(img.src);
       // console.log(img);
@@ -106,7 +115,7 @@ function PostCard({postObject}) {
     <div id="postcard-container">
       <div className="post-header-wrapper">
         <div className="post-header-left">
-          {viewPostPhoto!==false&&imageLoaded?
+          {viewPostPhoto!==false&&imageLoaded&&hasImage?
           <div onClick={viewPostPhotoHandler} id="view-post-photo">
             <img  src={image} alt="" />
           </div>:null}
@@ -128,7 +137,7 @@ function PostCard({postObject}) {
         <div className="post-content">
           {postObject.data.description}
         </div>
-        <div className="post-photo"  onClick={viewPostPhotoHandler} >
+        {hasImage?<div className="post-photo"  onClick={viewPostPhotoHandler} >
           <div 
           id="post-background-photo"
           style={{
@@ -145,7 +154,7 @@ function PostCard({postObject}) {
           }}
         />
            {postObject.data.attachment.images.length>0&&imageLoaded?<img loading='lazy' id='post-foreground-photo'src={image} alt="" />: <Loader type="bubble-ping" bgColor={'#d8491e'}  size={100} />}
-        </div>
+        </div>:''}
       </div>
       <div className="post-footer-wrapper">
         <div className="post-icons" id={`post-likes${liked?'-liked':''}`} onClick={likeHandler}>
