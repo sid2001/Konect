@@ -7,13 +7,46 @@ import { UserContext } from "/src/components/Context/userContext.js";
 import { likePost } from "/src/utils/forum.js";
 import {PostDispatchContext} from "/src/components/Context/ForumContext.js";
 import "/src/styles/postcard.css";
+import Loader from 'react-js-loader';
+
+// import ImageComponent from "./ImageComponent";
 import {Store as store} from 'react-notifications-component'
-import { useContext, useState } from "react";
+import { useContext, useState,useEffect } from "react";
 function PostCard({postObject}) {
   const user = useContext(UserContext);
   const [liked,setLiked] = useState(false);
   const [viewPostPhoto,setViewPostPhoto] = useState(false);
   const dispatchPosts = useContext(PostDispatchContext);
+  const [imageLoaded,setImageLoaded] = useState(false);
+  const [image,setImage] = useState(null);
+  useEffect(()=>{
+    const img = new Image()
+    img.onload = async ()=>{
+      
+      // console.log('loaded',postObject.data.title);
+      try{
+        //ensuring first image data is loaded before giving 
+        const data = await fetch(img.src);
+        const blob = await data.blob();
+        const reader = new FileReader();
+          reader.onload = function () {
+            // Convert the loaded image data to a base64 encoded string
+            setImage(reader.result);
+            setImageLoaded(true);
+          };
+        reader.readAsDataURL(blob);
+        // console.log(URL.createObjectURL(blob));
+        // setImage(URL.createObjectURL(blob));
+        // setImageLoaded(true);
+      }catch{
+        setImage(img.src);
+        setImageLoaded(true);
+      }
+      // setImage(img.src);
+      // console.log(img);
+    }
+    img.src = postObject.data.attachment.images[0]
+  },[postObject.data.attachment.images])
   const viewPostPhotoHandler = (e)=>{
     e.preventDefault();
     e.stopPropagation();
@@ -73,9 +106,9 @@ function PostCard({postObject}) {
     <div id="postcard-container">
       <div className="post-header-wrapper">
         <div className="post-header-left">
-          {viewPostPhoto!==false?
+          {viewPostPhoto!==false&&imageLoaded?
           <div onClick={viewPostPhotoHandler} id="view-post-photo">
-            <img src={postObject.data.attachment.images[0]} alt="" />
+            <img  src={image} alt="" />
           </div>:null}
           <div className="post-pfp">
             <img src="/src/assets/default-profile.png" alt="" />
@@ -97,20 +130,21 @@ function PostCard({postObject}) {
         </div>
         <div className="post-photo"  onClick={viewPostPhotoHandler} >
           <div 
+          id="post-background-photo"
           style={{
             position: 'absolute',
             top: 0,
             left: 0,
             width: '100%',
             height: '100%',
-            backgroundImage: `url(${postObject.data.attachment.images[0]})`,
+            backgroundImage: `url(${image})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             filter: 'blur(90px)', // Adjust the blur radius as needed
             zIndex: 0, // Ensure the background is behind the image
           }}
         />
-           {postObject.data.attachment.images.length>0?<img id='post-foreground-photo'src={postObject.data.attachment.images[0]} alt="" />:''}
+           {postObject.data.attachment.images.length>0&&imageLoaded?<img loading='lazy' id='post-foreground-photo'src={image} alt="" />: <Loader type="bubble-ping" bgColor={'#d8491e'}  size={100} />}
         </div>
       </div>
       <div className="post-footer-wrapper">
