@@ -249,8 +249,7 @@ erDiagram
 ## How it started
 > While studying backend designs I was introduced to WebRTC, a protocol which was especifically written for video/audio transmission over web-browsers. WebRTC provided Peer-To-Peer data transmission. I started building very basic versions of video calling web-apps. WebRTC wasn't just a protocol but a system of different protocols which predates WebRTC itself.
 >
-> After experimenting and reading a lot I decided to make use of it through some project work and what else comes to mind when thinking of connectivity and communication, a social networking platform.
-> And "I wanted to learn frontend development too XD". I chose React.js for this because of it's simplicity and well documented guide.
+> After experimenting and reading a lot I decided to make use of it through some project work and what else comes to mind when thinking of connectivity and communication, a social networking platform. So I started off with this project. There was one more reason to build this project, all my previous projects were all about backend and boring interfaces so this project gave me a chance to work with frontend apps, which to be honest was very interesting part of the project cause I was learning and implementing things at the same time. I chose React.js for this because of it's simplicity and well documented guide.
 > 
 ### Challenges
 >
