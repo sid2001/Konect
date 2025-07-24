@@ -247,12 +247,11 @@ erDiagram
 ```
 
 ## How it started
-> This was my 2nd year project. Previous projects focussed on backend this time I was looking forward to learn frontend frameworks which landed me on React.js, a simple and very well documented framework. The project goal wasn't clear in the beginning. I built some smaller React projects to understand it better before I made any major one.
-> 
-### My Introduction to WebRTC
->
 > While studying backend designs I was introduced to WebRTC, a protocol which was especifically written for video/audio transmission over web-browsers. WebRTC provided Peer-To-Peer data transmission. I started building very basic versions of video calling web-apps. WebRTC wasn't just a protocol but a system of different protocols which predates WebRTC itself.
 >
+> After experimenting and reading a lot I decided to make use of it through some project work and what else comes to mind when thinking of connectivity and communication, a social networking platform.
+> And "I wanted to learn frontend development too XD". I chose React.js for this because of it's simplicity and well documented guide.
+> 
 ### Challenges
 >
 > Peer-To-Peer type communication is hard to establish without any knowledge of client address and configuration. WebRTC requires a Singalling server to initialise and communicate configurations.
