@@ -320,11 +320,10 @@ sequenceDiagram
     VC-->>LC: SRTP (Media Stream)
     Note over VP,VC: Server side
 ```
-
-### Moving forward
-Now that I had a good feature to add in my project it still lacked the use of my frontend knowledge and an eager to design and build web-pages. With this idea of video calls I implemented live chatting along with a page to share pictures and stories.
-
-This project wasn't just about building a web-application but it led me to read a lot of documents and papers to know what is going under the hood.
+### Features
+> - Video calls
+> - Live chatting
+> - Sharing stories
 
 ### How I ensured scalability
 Testing your application's scalability without real world traffic or stress tests is like shooting arrows in the dark. Still, I could not pass the chance to build one. 
